@@ -1,0 +1,36 @@
+<div class="header">
+    <div class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#js-navbar-collapse" ng-click="collapse()">
+            <span class="sr-only">Навигация</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <!-- modify guest form END -->
+          <a class="navbar-brand" ui-sref="app"><img src="images/logo.png" height=30 width=30></a>
+          <button type="button" class="btn btn-info navbar-brand" id="ReloadButton" ng-click="stateReload()">
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+        </div>
+        <div class="collapse navbar-collapse" id="js-navbar-collapse" uib-collapse="isCollapsed">
+          <ul class="nav navbar-nav" ng-click="collapse()">
+            <li ui-sref-active-eq="active"><a ui-sref="app"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Зал</a></li>
+            <li ui-sref-active-eq="active"><a ui-sref="app.reservations"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Брони</a></li>
+            <li ui-sref-active-eq="active" ng-show="isCurrentUserAnAdmin"><a ui-sref="app.dashboard"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> Дашборд</a></li>
+            <li ui-sref-active-eq="active"><a ui-sref="app.history"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> История</a></li>
+            <li ui-sref-active-eq="active" ng-show="isCurrentUserAnAdmin"><a ui-sref="app.stat"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Статистика</a></li>
+            <li ui-sref-active-eq="active" ng-show="isCurrentUserAnAdmin"><a ui-sref="app.emplwages"><span class="glyphicon glyphicon-usd" aria-hidden="true"></span> З/п админов</a></li>            
+            <li ui-sref-active-eq="active" ng-show="isCurrentUserAnAdmin"><a ui-sref="app.clients"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Клиенты</a></li>
+            <li ui-sref-active-eq="active" ng-show="isCurrentUserAnAdmin"><a ui-sref="app.preferences"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Настройки</a></li>            
+            <!--<li ui-sref-active-eq="active"><a ui-sref="Modal.checkoutDetails"><span class="glyphicon glyphicon-film" aria-hidden="true"></span> Закрытие</a></li>-->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              <li><a id="LogoutButton" role="button" ng-click="logout()">
+                  <span class="glyphicon glyphicon-log-out"></span> Выход</a>
+              </li>
+          </ul>               
+        </div>
+      </div>
+    </div>
+  </div>

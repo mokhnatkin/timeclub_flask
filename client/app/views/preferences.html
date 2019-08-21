@@ -1,0 +1,204 @@
+<div class="container">
+    <div class="row row-content">
+      <!-- change password BEGIN -->
+      <h4><strong>Сменить пароль</strong></h4>
+      <button class="btn btn-primary" id="chngPwdButton" ng-click="toggleChngPwdModal()">
+          Изменить пароль</button>
+          <br><br>
+        <modal title="Добавить пользователя" ng-show="showChngPwdModal">
+          <form ng-submit="changePassword()">
+              <p>Изменить пароль для пользователя <b>{{ currentUserName }}</b> </p>
+ 
+              <div class="form-group">
+                  <label class="sr-only" for="password">Новый пароль</label>
+                  <input type="password" class="form-control input-sm" id="password" placeholder="новый пароль" ng-model="new_password" required>
+              </div>
+              <div class="form-group">
+                  <label class="sr-only" for="password">Повторите новый пароль</label>
+                  <input type="password" class="form-control input-sm" id="password" placeholder="новый пароль (повторно)" ng-model="new_password2" required>
+              </div>                            
+
+              <button type="submit" class="btn btn-primary">Изменить</button>
+              <button type="button" class="btn btn-danger" ng-click="cancelChangePassword()">Отменить</button>
+              <br>
+              <br>
+          </form>
+        </modal>
+      <!-- change password END -->
+    </div>
+  <div class="row row-content">
+      <h4><strong>Сотрудники</strong></h4>
+    <!-- add employee form BEGIN -->
+    <button class="btn btn-primary" id="addEmplButton" ng-click="toggleAddEmployeeModal()">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Добавить сотрудника</button>
+    <button class="btn btn-danger" id="deleteEmpl" ng-click="deleteEmpl()">
+      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Удалить сотрудника</button>
+      <br>
+    <div class="row row-content">
+      <br><br>
+      <modal title="Добавить пользователя" ng-show="showAddEmployeeModal">
+        <form class="form-inline" role="form" id="AddEmplForm" ng-submit="addNewEmpl()">          
+          <label for="emplName" class="control-label">Имя сотрудника</label>
+            <input type="text" id="emplName" class="form-control" ng-model="newEmpl.name" required>            
+          <div class="checkbox">
+            <label><input type="checkbox" id="isDir" ng-model="newEmpl.isDirector"> Директор?</label>
+          </div>
+          <hr><br>
+          <button type="submit" class="btn btn-primary" id="confirmAddEmplButton" ng-disabled="AddEmplForm.$invalid">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Добавить</button>
+          <button type="button" class="btn btn-danger" id="cancelAddUserButton" ng-click="cancelAddingEmployee()">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Отменить</button>
+          <hr><br>                                  
+        </form>
+      </modal>
+    </div>
+    <!-- add employee form END -->      
+    <!-- list of employees BEGIN -->
+    <div class="table-wrapper">
+        <table class="table table-striped table-condensed table-responsive">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Имя</th>
+              <th>Директор?</th>              
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="employee in employees | orderBy:'name' track by employee.id" ng-show="showEmps">
+              <td><input type="checkbox" ng-model="employee.isSelected"></td>                        
+              <td>{{employee.name}}</td>
+              <td><p ng-if="employee.isDirector">Да</p><p ng-if="!employee.isDirector">Нет</p></td>                        
+                                      
+            </tr>                        
+          </tbody>
+        </table>
+      </div>
+      <!-- list of employees END -->      
+  </div>
+
+  <div class="row row-content">
+    <!-- add user form BEGIN -->
+    <h4><strong>Пользователи системы</strong></h4>
+    <button class="btn btn-primary" id="addUserButton" ng-click="toggleAddUserModal()">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Добавить пользователя</button>
+    <button class="btn btn-danger" id="deleteUser" ng-click="DeleteUser()">
+      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Удалить пользователя</button>
+    <div class="row row-content">
+      <modal title="Добавить пользователя" ng-show="showAddUserModal">
+        <form class="form-horizontal" role="form" id="AddUserForm" ng-submit="register()">    
+          <hr>
+          <label for="userEmail" class="control-label">E-mail</label> 
+            <input type="email" id="userEmail" class="form-control" placeholder="E-mail" ng-model="email"  required>
+          <label for="role" class="control-label">Роль</label>                           
+            <select class="form-control" id="role" ng-model="role" ng-options="role.name for role in roles" required></select>                                      
+          <label for="userPassword" class="control-label">Пароль</label> 
+            <input type="password" id="userPassword" class="form-control" placeholder="пароль" ng-model="password" required>
+          <label for="userPasswordConf" class="control-label">Повторите пароль</label> 
+            <input type="password" id="userPasswordConf" class="form-control" placeholder="повторите пароль" ng-model="passwordConf"  required>                      
+          <br>
+          <button type="submit" class="btn btn-primary" id="confirmAddUserButton" ng-disabled="AddUserForm.$invalid">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Добавить</button>
+          <button type="button" class="btn btn-danger" id="cancelAddUserButton" ng-click="cancelAddingUser()">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Отменить</button>
+          <hr><br>                                  
+        </form>
+      </modal>
+    </div>
+    <!-- add user form END -->
+    <br>
+    <!-- list of users BEGIN -->
+  <div class="table-wrapper">
+    <table class="table table-striped table-condensed table-responsive">
+      <thead>
+        <tr>
+          <th></th>
+          <th>E-mail</th>          
+          <th>Роль</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="staff in staffs | orderBy:'email' track by staff.id" ng-show="showUsers">
+          <td><input type="checkbox" ng-model="staff.isSelected"></td>
+          <td>{{staff.email}}</td>
+          <td>{{staff.role}}</td>
+        </tr>                        
+      </tbody>
+    </table>
+  </div>
+  <!-- list of users END -->
+    <h4><strong>Акции</strong></h4>
+      <button class="btn btn-primary" id="addPromoButton" ng-click="toggleAddPromotionModal()">
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Добавить акцию</button>
+      <button class="btn btn-warning" id="activatePromo" ng-click="ToggleIsActiveFlagPromotion()">
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>  Активировать/Деактивировать</button>
+      <!-- add promotion form BEGIN -->
+      <div class="row row-content">
+        <modal title="Add promotion" ng-show="showAddPromotionModal">
+          <form class="form-horizontal" role="form" id="AddPromotionForm" ng-submit="addPromotion()">
+            <hr>
+            <label for="promoName" class="control-label">Название</label> 
+              <input type="text" id="promoName" class="form-control" placeholder="Название акции" ng-model="newPromotion.name"  required>                                              
+            <label for="promoType" class="control-label">Тип акции</label>
+              <select class="form-control" id="promoType" ng-model="newPromotion.typeDesc" required>
+                <option ng-repeat="promotionType in promotionTypes">{{promotionType.desc}}</option>
+              </select>      
+            <label for="promoValue" class="control-label">Значение (тг. или %)</label> 
+              <input type="number" id="promoValue" class="form-control" placeholder="Значение (тг. если тип = фиксированная стоимость, % - если скидка)" ng-model="newPromotion.value" min=0  required>
+            <br>
+            <button type="submit" class="btn btn-primary" id="confirmAddPromoButton" ng-disabled="AddPromotionForm.$invalid">
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Добавить</button>
+            <button type="button" class="btn btn-danger" id="cancelAddPromoButton" ng-click="cancelAddingPromotion()">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Отменить</button>
+            <hr><br>                                  
+          </form>
+        </modal>
+      </div>
+      <!-- add promotion form END -->
+      <br>
+      <!-- list of promotions BEGIN -->
+    <div class="table-wrapper">      
+      <table class="table table-striped table-condensed table-responsive">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Активна?</th>
+            <th>Название акции</th>
+            <th>Тип</th>
+            <th>Значение (тг. или %)</th>                         
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="promotion in promotions | orderBy:'isActive':true track by promotion.id" ng-show="showPromos">
+            <td><input type="checkbox" ng-model="promotion.isSelected"></td>
+            <td><input type="checkbox" ng-model="promotion.isActive" disabled="true"></td>
+            <td>{{promotion.name}}</td>
+            <td>{{promotion.typeDesc}}</td>
+            <td>{{promotion.value}}</td>
+          </tr>                        
+        </tbody>
+      </table>
+    </div>
+    <!-- list of promotions END -->    
+    <h4><strong>Значения констант</strong></h4>
+    <!-- list of consts BEGIN -->
+    <div class="table-wrapper">
+      <table class="table table-striped table-condensed table-responsive">
+        <thead>
+          <tr>            
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Значение</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="const in consts | orderBy:'name' track by const.name">            
+            <td>{{const.name}}</td>
+            <td>{{const.desc}}</td>
+            <td>{{const.value}}</td>                      
+          </tr>                        
+        </tbody>
+      </table>
+    </div>
+    <!-- list of consts END -->
+  </div>
+</div>   

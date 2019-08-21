@@ -1,0 +1,107 @@
+<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12"></div>
+  <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+    <div class="row" vertical-align="middle">
+      <!-- set period form BEGIN-->
+      <form name="setPeriodForm">
+        <div class="col-sm-12 col-xs-12 col-md-5">
+          <label for="beginDatetimepicker">Начало:</label>
+          <datetimepicker
+            hour-step="hourStep" 
+            minute-step="minuteStep"
+            ng-model="startDate" 
+            show-meridian="false" 
+            date-format="{{format}}"
+            date-options="dateOptions"        
+            datepicker-append-to-body="false"
+            readonly-date="false"
+            disabled-date="false"
+            hidden-time="false"
+            hidden-date="false" 
+            name="beginDatetimepicker"
+            show-spinners="false"
+            readonly-time="false"
+            date-opened="false"
+            show-button-bar="false"        
+            max-date="maxDate">       
+          </datetimepicker>
+        </div>        
+        <div class="col-sm-12 col-xs-12 col-md-5">
+          <label for="endDatetimepicker">Конец:&nbsp;&nbsp;</label>
+          <datetimepicker 
+            hour-step="hourStep" 
+            minute-step="minuteStep"
+            ng-model="endDate" 
+            show-meridian="false" 
+            date-format="{{format}}" 
+            date-options="dateOptions"        
+            datepicker-append-to-body="false"
+            readonly-date="false"
+            disabled-date="false"
+            hidden-time="false"
+            hidden-date="false" 
+            name="endDatetimepicker"
+            show-spinners="false"
+            readonly-time="false"
+            date-opened="false"
+            show-button-bar="false"
+            max-date="maxDate">        
+          </datetimepicker>
+        </div>
+        <div class="col-sm-12 col-xs-12 col-md-2">
+          <button class="btn btn-primary" id="showClientsData" ng-click="getDatesAndFetchClients(startDate,endDate)">Показать</button>
+        </div>    
+      </form>
+      <!-- set period form END-->
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-xs-12" ng-if="!showClients"><!-- show error message if no data is fetched from the server -->
+        <h3>{{message}}</h3>
+      </div>
+    </div>    
+      
+    <h4><strong>Список сотрудников</strong></h4>
+    <div class="row row-content">
+      <!-- search guest form BEGIN -->
+        <form class="form-inline" role="form" id="searchForm">
+            <input type="search" ng-model="search" class="form-control" placeholder="поиск...">
+            <button type="button" class="btn btn-default" ng-click="search = ''">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>
+        </form>      
+    </div>
+      <!-- search guest form END -->    
+    <br>
+    <!-- list of guests BEGIN -->
+    <div class="table-wrapper">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+            <th></th>
+            <th>Имя</th>            
+            <th class="narrowColumn">Тип</th>            
+            <th class="narrowColumn">Время прихода</th>
+            <th class="narrowColumn">Время ухода</th>
+            <th align="center">Итого минут</th>
+            <th align="center">Итого сумма, тг</th>
+            <th>Время</th>
+            <th>Комментарий</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr ng-class="setRowBackgroud(client.isEmployeeAtWork)" ng-repeat="client in clients | filter:searchNameAndCompany | orderBy:'checkoutTime' track by client.id" ng-show="showClients">
+            <td><input type="checkbox" ng-model="client.isChecked"></td>
+            <td><strong>{{client.name}}</strong></td>
+            <td class="narrowColumn"><p ng-if="!client.isEmployee">Клиент</p><p ng-if="client.isEmployee && client.isEmployeeAtWork && !client.isDirector">Сотрудник Смена</p><p ng-if="client.isEmployee && !client.isEmployeeAtWork && !client.isDirector">Сотрудник Просто</p><p ng-if="client.isEmployee && client.isDirector">Директор</p></td>
+            <td class="narrowColumn">{{client.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
+            <td class="narrowColumn">{{client.checkoutTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
+            <td align="center">{{client.timeInClub}}</td>
+            <td align="center">{{computeWage(client.timeInClub,client.isEmployeeAtWork) | number:0}}</td>
+            <td>{{convertMinutes(client.timeInClub)}}</td>
+            <td>{{client.comment}}</td>
+        </tr>                        
+      </tbody>
+    </table>
+  </div>
+  <!-- list of guests END -->
+</div>
+<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12"></div>

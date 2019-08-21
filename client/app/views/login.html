@@ -1,0 +1,25 @@
+
+     <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-5 col-md-4 col-sm-4 col-xs-12"></div>
+            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+            <h3>Некафе на Джандосова </h3>
+                <form ng-submit="login()" >
+                    <div class="form-group">
+                        <label class="sr-only" for="username">E-mail</label>
+                        <input type="text" class="form-control input-sm" id="username" placeholder="e-mail" ng-model="username">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="password">Пароль</label>
+                        <input type="password" class="form-control input-sm" id="password" placeholder="пароль" ng-model="password">
+                    </div>
+
+                    <button type="submit" class="btn btn-info btn-sm">Вход</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="cancelLogin()">Отмена</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-4 col-xs-12"></div>
+        </div>
+    </div>    

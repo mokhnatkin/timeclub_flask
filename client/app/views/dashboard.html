@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12" ng-if="!showInfo"> <!-- show error message if no data is fetched from the server -->
+      <h3>{{message}}</h3>
+    </div>
+    <div class="table-wrapper">
+      <table class="table table-striped table-condensed table-responsive" ng-if="showInfo">
+        <thead>
+          <tr>                         
+            <th>Категория</th>
+            <th align="right"><strong>Сумма</strong></th>
+            <th>Всего людей</th>
+            <th>Сотрудников</th>
+            <th>Гостей</th>
+            <th>Платных гостей</th>
+            <th>Бесплатных гостей</th>                                    
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Сейчас в Некафе</strong> (в зале):</td>
+            <td align="right"><strong>{{outStatNow[5] | number:0 }}</strong></td>
+            <td>{{outStatNow[0]}}</td>
+            <td>{{outStatNow[1]}}</td>
+            <td>{{outStatNow[2]}}</td>
+            <td>{{outStatNow[3]}}</td>
+            <td>{{outStatNow[4]}}</td>            
+          </tr>
+          <tr>
+            <td><strong>Некафе за сегодня:</strong> начиная с <strong>{{startDate | date: 'dd.MM.y H:mm:ss'}}</strong></td>
+            <td align="right"><strong>{{outStatToday[5] | number:0 }}</strong></td>
+            <td>{{outStatToday[0]}}</td>
+            <td>{{outStatToday[1]}}</td>
+            <td>{{outStatToday[2]}}</td>
+            <td>{{outStatToday[3]}}</td>
+            <td>{{outStatToday[4]}}</td>            
+          </tr>
+          <tr>
+            <td><strong>Некафе за этот месяц:</strong> начиная с <strong>{{startDate2 | date: 'dd.MM.y H:mm:ss'}}</strong></td>
+            <td align="right"><strong>{{outStatMonth[5] | number:0 }}</strong></td>
+            <td>{{outStatMonth[0]}}</td>
+            <td>{{outStatMonth[1]}}</td>
+            <td>{{outStatMonth[2]}}</td>
+            <td>{{outStatMonth[3]}}</td>
+            <td>{{outStatMonth[4]}}</td>            
+          </tr>                        
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

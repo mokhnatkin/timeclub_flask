@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="Modal-box">
+        <h3>Закрыть выбранных гостей?</h3>
+        <div class="table-wrapper">
+            <table class="table table-condensed">
+                <tr>
+                    <td><h3>Всего гостей:</h3></td>
+                    <td><h3><strong>{{totalN}}</strong></h3></td>
+                    <td><h3>Всего сумма:</h3></td>
+                    <td><h3><strong>{{amountCheckout | number:0}}</strong></h3></td>
+                </tr>
+            </table>
+        </div>
+        <div class="table-wrapper">
+            <button class="btn btn-success" ng-click="checkoutGuests()" ng-disabled="isPaidButtonActive">Да</button>
+            <button class="btn btn-danger" ng-click="cancelCheckoutGuests()" ng-disabled="isPaidButtonActive">Отмена</button>
+            <button class="btn btn-info" ng-click="closeCheckoutWindow()" ng-disabled="!isPaidButtonActive">Оплачено</button>            
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>№</th>
+                        <th align="center">Сумма</th>
+                        <th>Время</th>
+                        <th class="narrowColumn">Тип</th>                        
+                        <th>Категория</th>
+                        <th>Акция</th>
+                        <th class="narrowColumn">Время прихода</th>                        
+                        <th>Комментарий</th>
+                        <th>Статус оплаты</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-class="setRowBackgroud(guestToCheckout.isFree,guestToCheckout.promotion,guestToCheckout.isEmployee)" ng-repeat="guestToCheckout in guestsToCheckout | orderBy:'arrivalTime':true track by guestToCheckout.id">
+                        <td><strong>{{guestToCheckout.name}}</strong></td>
+                        <td>{{guestToCheckout.companyN}}</td>
+                        <td align="center"><strong>{{guestToCheckout.amount | number:0}}</strong></td>
+                        <td>{{convertMinutes(guestToCheckout.timeInClub)}}</td>
+                        <td class="narrowColumn"><p ng-if="!guestToCheckout.isEmployee">Клиент</p><p ng-if="guestToCheckout.isEmployee && guestToCheckout.isEmployeeAtWork">Сотрудник Смена</p><p ng-if="guestToCheckout.isEmployee && !guestToCheckout.isEmployeeAtWork">Сотрудник Просто</p></td>
+                        <td><p ng-if="guestToCheckout.isFree">Бесплатно</p><p ng-if="!guestToCheckout.isFree">Платно</p></td>
+                        <td>{{getPromoNameById(guestToCheckout.promotion)}}</td>
+                        <td class="narrowColumn">{{guestToCheckout.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>                        
+                        <td>{{guestToCheckout.comment}}</td>
+                        <td><button ng-class="defineBtnClass(guestToCheckout.isChecked)" ng-click="guestToCheckout.isChecked=!guestToCheckout.isChecked">{{defineBtnTxt(guestToCheckout.isChecked)}}</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-success" ng-click="checkoutGuests()" ng-disabled="isPaidButtonActive">Да</button>
+        <button class="btn btn-danger" ng-click="cancelCheckoutGuests()" ng-disabled="isPaidButtonActive">Отмена</button>
+        <button class="btn btn-info" ng-click="closeCheckoutWindow()" ng-disabled="!isPaidButtonActive">Оплачено</button>
+    </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="container-fluid">
+      <h4><strong>Добавить клиента</strong></h4>
+      <!-- add client form BEGIN -->
+        <form class="form-inline" role="form" id="AddClientForm" ng-submit="addClient(newClient,true)">
+            <label for="phoneNum" class="control-label">Мобильный телефон</label>
+              <input type="text" ui-mask="{{phoneMask}}" id="phoneNum" class="form-control" ng-model="newClient.phone" required>
+            <label for="name" class="control-label">Имя</label>
+              <input type="text" id="name" class="form-control" ng-model="newClient.name">
+            <label for="birthday" class="control-label">День рождения</label>
+              <datetimepicker
+                hour-step="hourStep"
+                minute-step="minuteStep"
+                ng-model="newClient.birthdate"
+                show-meridian="false"
+                date-format="{{format}}"
+                date-options="dateOptions"
+                datepicker-append-to-body="false"
+                readonly-date="false"
+                disabled-date="false"
+                hidden-time="true"
+                hidden-date="false"
+                name="birthday"
+                show-spinners="false"
+                readonly-time="false"
+                date-opened="false"
+                show-button-bar="false"
+                max-date="maxDate">
+              </datetimepicker>
+            <label for="comment" class="control-label">Комментарий</label>
+              <input type="text" id="comment" class="form-control" ng-model="newClient.comment">
+            <button type="submit" class="btn btn-success" id="confirmAddClientButton" ng-disabled="AddClientForm.$invalid">
+              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+            <button type="button" class="btn btn-danger" id="cancelAddClientButton" ng-click="cancelAddingClient()">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+            <br><br>
+        </form>
+        <!-- add client form END -->
+        <!-- create clients from Excel file BEGIN -->
+        <!--<h4><strong>Загрузить клиентов из Excel файла</strong></h4>
+        
+        <form class="form-inline">
+            <button class="btn btn-info" id="templateXLS" ng-click="downloadExampleXLS()">
+              <span class="glyphicon glyphicon-download" aria-hidden="true"></span> Скачать файл-образец</button>
+            <label class="btn btn-primary btn-file">
+              Выбрать файл... <input type="file" name="xlfile" id="xlf" style="display: none;">
+            </label>
+            <button class="btn btn-primary" id="upoadList" ng-click="uploadFromXLS()">
+              <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Загрузить список из файла</button>
+        </form>-->
+        <!-- create clients from Excel file END -->
+        <br><br>
+        <pre id="out"></pre>
+      <h4><strong>Общий список клиентов</strong></h4>
+      <!-- search client form BEGIN -->
+      <form class="form-inline" role="form" id="searchForm">
+        <input type="search" ng-model="search" class="form-control" placeholder="поиск...">
+        <button type="button" class="btn btn-default" ng-click="search = ''">
+          <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>
+        <span>&nbsp;&nbsp;&nbsp;</span>
+        <button class="btn btn-danger" id="deleteClient" ng-click="DeleteClient()">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>  Удалить</button>
+      </form>
+      <!-- search client form END -->
+      <div class="col-xs-12" ng-if="!showInfo"> <!-- show error message if no data is fetched from the server -->
+        <h3>{{message}}</h3>
+      </div>
+    <div class="table-wrapper">
+      <!-- list of clients BEGIN -->
+      <table class="table table-striped table-condensed table-responsive">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Мобильный телефон</th>
+            <th>Имя</th>
+            <th>День рождения</th>
+            <th>Комментарий</th>
+            <th>Системный комментарий</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--<tr ng-repeat="client in clientlist | filter:search track by client.id" ng-show="showInfo">-->
+          <tr dir-paginate="client in clientlist | filter:search |itemsPerPage:10 track by client.id" ng-show="showInfo">
+            <td><input type="checkbox" ng-model="client.isSelected"></td>
+            <td>{{client.phone | phoneFilter}}</td>
+            <td>{{client.name}}</td>
+            <td>{{client.birthdate | date: 'dd.MM.y' : '+0600'}}</td>
+            <td>{{client.comment}}</td>
+            <td>{{client.sysComment}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- pagination controls -->
+      <dir-pagination-controls
+         max-size="5"
+         direction-links="true"
+         boundary-links="true" >
+       </dir-pagination-controls>
+      <!-- list of clients END -->
+    </div>
+  </div>

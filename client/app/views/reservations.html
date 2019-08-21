@@ -1,0 +1,177 @@
+<div class="container-fluid">  
+      <div class="col-xs-12" ng-if="!showInfo"> <!-- show error message if no data is fetched from the server -->
+        <h3>{{message}}</h3>
+      </div>
+      <!-- ADD new booking form BEGIN -->
+      <div class = "row" ng-show="showAddBookingForm">      
+        <h4><strong>Добавить бронь</strong></h4>
+            <form class="form-inline" role="form" id="AddBookingForm" ng-submit="addBooking(newBooking)">
+                <div class="form-group">
+                    <label for="name" class="control-label">Имя</label>
+                        <input type="text" id="name" class="form-control" ng-model="newBooking.name">            
+                    <label for="phoneNum" class="control-label">Мобильный телефон</label>
+                    <input type="text" ui-mask="{{phoneMask}}" id="phoneNum" class="form-control" ng-model="newBooking.phone" required>
+                    <label for="dateSelect" class="control-label">Дата и время брони</label>
+                    <datetimepicker 
+                        hour-step="hourStep" 
+                        minute-step="minuteStep"
+                        ng-model="newBooking.date"
+                        show-meridian="false" 
+                        date-format="{{format}}" 
+                        date-options="dateOptions"        
+                        datepicker-append-to-body="false"
+                        readonly-date="false"
+                        disabled-date="false"
+                        hidden-time="false"
+                        hidden-date="false" 
+                        name="dateSelect"
+                        show-spinners="false"
+                        readonly-time="false"
+                        date-opened="false"
+                        show-button-bar="false"                    
+                    >
+                    </datetimepicker>
+                </div>
+                <br><br>
+                <div class="form-group">
+                    <label for="numberofguests" class="control-label">Кол-во человек</label>
+                    <input type="number" min=1 id="numberofguests" class="form-control" ng-model="newBooking.numberOfPeople">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="newBooking.isBirthday"> Есть именинник?</label>
+                    </div>              
+                    <label for="place" class="control-label">Посадка</label>
+                    <input type="text" id="place" class="form-control" ng-model="newBooking.place">
+                    <label for="payment" class="control-label">Сумма предоплаты</label>
+                    <input type="number" min=0 id="payment" class="form-control" ng-model="newBooking.prePayment">
+                </div>
+                <br><br>
+                <div class="form-group">
+                    <label for="comment" class="control-label">Комментарий</label>
+                    <input type="text" id="comment" class="form-control" ng-model="newBooking.comment">
+                </div>
+                <br><br>
+                <button type="submit" class="btn btn-success" id="confirmAddBookingButton" ng-disabled="AddBookingForm.$invalid">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Добавить</button>
+                <button type="button" class="btn btn-danger" id="cancelAddBookingButton" ng-click="cancelAddingBooking()">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Отменить</button>
+            </form>
+        </div>
+        <!-- add new booking form END -->
+        <hr>
+        <!-- modify booking form BEGIN -->
+        <div class = "row" ng-show="showEditBookingForm">
+            <h4><strong>Изменить бронь</strong></h4>
+            <form class="form-inline" role="form" id="EditBookingForm" ng-submit="postChangesToBooking(modifiedBooking)">
+                <div class="form-group">
+                    <label for="name" class="control-label">Имя</label>
+                        <input type="text" id="name" class="form-control" ng-model="modifiedBooking.name" ng-disabled="true">            
+                    <label for="phoneNum" class="control-label">Мобильный телефон</label>
+                        <input type="text" ui-mask="{{phoneMask}}" id="phoneNum" class="form-control" ng-model="modifiedBooking.phone" ng-disabled="true" required>
+                    <label for="dateSelect" class="control-label">Дата и время брони</label>
+                        <datetimepicker 
+                            hour-step="hourStep" 
+                            minute-step="minuteStep"
+                            ng-model="modifiedBooking.date"
+                            show-meridian="false" 
+                            date-format="{{format}}" 
+                            date-options="dateOptions"        
+                            datepicker-append-to-body="false"
+                            readonly-date="false"
+                            disabled-date="false"
+                            hidden-time="false"
+                            hidden-date="false" 
+                            name="dateSelect"
+                            show-spinners="false"
+                            readonly-time="false"
+                            date-opened="false"
+                            show-button-bar="false"                    
+                        >
+                        </datetimepicker>
+                    </div>
+                    <br><br>
+                    <div class="form-group">
+                        <label for="numberofguests" class="control-label">Кол-во человек</label>
+                            <input type="number" min=1 id="numberofguests" class="form-control" ng-model="modifiedBooking.numberOfPeople">
+                        <div class="checkbox">
+                            <label><input type="checkbox" ng-model="modifiedBooking.isBirthday"> Есть именинник?</label>
+                        </div>              
+                        <label for="place" class="control-label">Посадка</label>
+                            <input type="text" id="place" class="form-control" ng-model="modifiedBooking.place">
+                        <label for="payment" class="control-label">Сумма предоплаты</label>
+                            <input type="number" min=0 id="payment" class="form-control" ng-model="modifiedBooking.prePayment">
+                        </div>
+                        <br><br>
+                        <div class="form-group">
+                            <label for="comment" class="control-label">Комментарий</label>
+                            <input type="text" id="comment" class="form-control" ng-model="modifiedBooking.comment">
+                        </div>
+                        <br><br>
+                        <button type="submit" class="btn btn-success" id="confirmModifyBookingButton" ng-disabled="EditBookingForm.$invalid">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Изменить</button>
+                        <button type="button" class="btn btn-danger" id="cancelModifyBookingButton" ng-click="cancelEditingBooking()">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Отменить</button>
+                    </form>
+        </div>
+        <!-- modify booking form END -->
+        
+      <h4><strong>Список броней</strong></h4>
+      <!-- list of bookings - search form BEGIN -->
+      <form class="form-inline" role="form" id="searchForm" ng-show="showSearchForm">
+        <input type="search" ng-model="search" class="form-control" placeholder="поиск...">
+        <button type="button" class="btn btn-default" ng-click="search = ''">
+            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></button>
+        <span>&nbsp;&nbsp;&nbsp;</span>        
+        <button type="button" class="btn btn-default" ng-disabled="!TodayBookingsBtn" ng-click="showTodayBookings()">На сегодня</button>
+        <button type="button" class="btn btn-default" ng-disabled="!TodayAndFutureBookingsBtn" ng-click="showTodayAndFutureBookings()">Сегодня и будущие</button>
+        <button type="button" class="btn btn-default" ng-disabled="!AllBookingsBtn" ng-click="showAllBookings()">Все брони</button>
+        <button type="button" class="btn btn-default" ng-disabled="!PastYearBookingsBtn" ng-click="showPastYearBookings()">Прошлогодние брони</button>
+      </form>
+      <br>
+      <form class="form-inline" role="form" ng-show="showSearchForm">
+        <button type="button" class="btn btn-success" ng-click="changeBookingStatus(statuses[1])">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Пришли</button>
+        <button type="button" class="btn btn-warning" ng-click="changeBookingStatus(statuses[2])">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Не пришли</button>            
+        <button type="button" class="btn btn-danger" ng-click="changeBookingStatus(statuses[3])">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Отменить бронь</button>
+        <button type="button" class="btn btn-info" ng-click="showModifyBookingForm()">
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Изменить бронь</button>         
+      </form>
+      <!-- list of bookings - search form END -->
+      <br>
+    <!-- list of bookings BEGIN -->
+    <div class="table-wrapper">
+      <table class="table table-condensed table-responsive">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Мобильный телефон</th>
+            <th>Имя</th>
+            <th class="narrowColumn">Дата брони</th>
+            <th>Кол-во человек</th>
+            <th>Посадка</th>
+            <th>Именинник?</th>
+            <th>Предоплата</th>
+            <th>Комментарий</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-class="setRowBackgroud(booking.status)" ng-repeat="booking in bookings | orderBy:'date' | filter:search track by booking.id" ng-show="showInfo">
+            <td><input type="checkbox" ng-model="booking.isSelected"></td>                        
+            <td>{{booking.phone | phoneFilter}}</td>
+            <td>{{booking.name}}</td>
+            <td class="narrowColumn">{{booking.date | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
+            <td>{{booking.numberOfPeople}}</td>
+            <td>{{booking.place}}</td>
+            <td><p ng-if="booking.isBirthday">Да</p><p ng-if="!booking.isBirthday">Нет</p></td>
+            <td>{{booking.prePayment | number:0}}</td>
+            <td>{{booking.comment}}</td>
+            <td>{{booking.status}}</td>
+          </tr>                        
+        </tbody>
+      </table>
+    </div>
+    <!-- list of bookings END -->  
+</div>
+  

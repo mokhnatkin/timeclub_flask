@@ -1,0 +1,97 @@
+<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12"></div>
+<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12"> 
+  <div class="row" vertical-align="middle">
+    <form name="setPeriodForm">          
+      <div class="col-sm-12 col-xs-12 col-md-5">
+        <label for="beginDatetimepicker">Начало:</label>
+        <datetimepicker
+          hour-step="hourStep" 
+          minute-step="minuteStep"
+          ng-model="startDate"
+          show-meridian="false" 
+          date-format="{{format}}"
+          date-options="dateOptions"        
+          datepicker-append-to-body="false"
+          readonly-date="false"
+          disabled-date="false"
+          hidden-time="false"
+          hidden-date="false" 
+          name="beginDatetimepicker"
+          show-spinners="false"
+          readonly-time="false"
+          date-opened="false"
+          show-button-bar="false"        
+          max-date="maxDate">       
+        </datetimepicker>
+      </div>
+      <div class="col-sm-12 col-xs-12 col-md-5">
+        <label for="endDatetimepicker">Конец:&nbsp;&nbsp;</label>
+        <datetimepicker 
+          hour-step="hourStep" 
+          minute-step="minuteStep"
+          ng-model="endDate" 
+          show-meridian="false" 
+          date-format="{{format}}" 
+          date-options="dateOptions"        
+          datepicker-append-to-body="false"
+          readonly-date="false"
+          disabled-date="false"
+          hidden-time="false"
+          hidden-date="false" 
+          name="endDatetimepicker"
+          show-spinners="false"
+          readonly-time="false"
+          date-opened="false"
+          show-button-bar="false"
+          max-date="maxDate">        
+        </datetimepicker>
+      </div>
+      <div class="col-sm-12 col-xs-12 col-md-2">          
+        <button class="btn btn-primary" id="showData" ng-click="getDatesAndFetchClients(startDate,endDate)">Показать статистику</button>
+      </div>    
+    </form>
+    </div>    
+    <hr>
+  </div>
+  
+  <div class="container">
+  <div class="row" ng-if="showMessage"> <!-- show error message if no data is fetched from the server -->
+    <h3>{{message}}</h3>
+  </div>
+  <div class="row" ng-show="showInfo"> 
+      <h4><strong>Статистика за период с {{startDate | date: 'dd.MM.y H:mm:ss'}} по {{endDate | date: 'dd.MM.y H:mm:ss'}}</strong></h4>
+        <div class="table-wrapper">        
+          <table class="table table-striped table-condensed table-responsive">
+              <thead>
+                  <tr>                         
+                      <th>Категория</th>
+                      <th>Кол-во</th>
+                      <th>Сумма</th>
+                      <th>Средний чек</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr ng-repeat="outStat in outStat">
+                      <td>{{outStat.category}}</td>
+                      <td>{{outStat.n}}</td>
+                      <td>{{outStat.sum | number:0}}</td>
+                      <td>{{outStat.av | number:0}}</td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class = "container">
+      <div class="row" ng-show="showInfo">
+          <div>
+            <h4><strong>Кол-во гостей</strong></h4>
+            <angular-chart options="chartGuestsOptions"></angular-chart>
+          </div>
+          <div>
+              <h4><strong>Суммы</strong></h4>
+              <angular-chart options="chartAmountsOptions"></angular-chart>
+            </div>          
+        </div>
+      </div>
