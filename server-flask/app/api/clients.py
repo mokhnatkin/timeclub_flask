@@ -1,0 +1,96 @@
+from app.api import bp
+from flask import jsonify, request
+from app.models import Clients
+from app.api.errors import bad_request
+from app import db
+import dateutil.parser
+from datetime import datetime, timedelta
+from app.api.auth import token_auth
+
+
+@bp.route('/clients/<int:id>',methods=['GET'])#get the item
+@token_auth.login_required
+def get_client(id):
+    return jsonify(Clients.query.get_or_404(id).to_dict())
+
+
+@bp.route('/clients',methods=['GET'])#get all items
+@token_auth.login_required
+def get_clients():
+    resources = Clients.query.filter(Clients.isOpen == False).all()
+    data = Clients.to_collection_dict(resources)
+    return jsonify(data)
+
+
+@bp.route('/clients',methods=['POST'])#create item
+@token_auth.login_required
+def create_client():
+    data = request.get_json() or {}
+    if 'name' not in data:
+        return bad_request('name is required')
+    item = Clients()
+    item.from_dict(data)
+    db.session.add(item)
+    db.session.commit()
+    response = jsonify(item.to_dict())
+    response.status_code = 201
+    return response
+
+
+@bp.route('/clients/<int:id>',methods=['PUT'])#update item
+@token_auth.login_required
+def update_client(id):
+    item = Clients.query.get_or_404(id)
+    data = request.get_json() or {}
+    item.from_dict(data)
+    db.session.commit()
+    return jsonify(item.to_dict())
+
+
+@bp.route('/clients/<int:id>',methods=['DELETE'])#delete item
+@token_auth.login_required
+def delete_client(id):
+    item = Clients.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    return '', 204
+
+
+@bp.route('/employees/<checkout_start>/<checkout_end>',methods=['GET'])#get the items filtered by isEmployee, isDirector
+@token_auth.login_required
+def get_clients_employees(checkout_start,checkout_end):
+    #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
+    _checkout_start = dateutil.parser.parse(checkout_start)
+    _checkout_end = dateutil.parser.parse(checkout_end)
+    start = _checkout_start.date()
+    end = _checkout_end.date() + timedelta(days=1)
+    resources = Clients.query.filter(Clients.isEmployee == True) \
+                            .filter(Clients.isDirector == False) \
+                            .filter(Clients.checkoutTime > start) \
+                            .filter(Clients.checkoutTime < end) \
+                            .filter(Clients.isOpen == False).all()
+    data = Clients.to_collection_dict(resources)
+    return jsonify(data)
+
+
+@bp.route('/guests',methods=['GET'])#get the items filtered by isOpen
+@token_auth.login_required
+def get_guests():
+    resources = Clients.query.filter(Clients.isOpen == True).all()
+    data = Clients.to_collection_dict(resources)
+    return jsonify(data)
+
+
+@bp.route('/clients_filtered_by_checkout/<checkout_start>/<checkout_end>',methods=['GET'])#get the items filtered by checkoutTime
+@token_auth.login_required
+def get_clients_checkout(checkout_start,checkout_end):
+    #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
+    _checkout_start = dateutil.parser.parse(checkout_start)
+    _checkout_end = dateutil.parser.parse(checkout_end)
+    start = _checkout_start.date()
+    end = _checkout_end.date() + timedelta(days=1)
+    resources = Clients.query.filter(Clients.isOpen == False) \
+                            .filter(Clients.checkoutTime > start) \
+                            .filter(Clients.checkoutTime < end).all()
+    data = Clients.to_collection_dict(resources)
+    return jsonify(data)
