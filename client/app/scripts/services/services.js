@@ -12,10 +12,9 @@ angular.module('timeclubAngularApp')
 
 
     
-    //constants baseURL and serverTimeURL for production mode    
-    //.constant("baseURL","http://194.87.99.245:3000/api/")
-
-    .constant("baseURL_flask","http://127.0.0.1:5000/api/")
+    //constants baseURL and serverTimeURL for production mode
+    //.constant("baseURL_flask","http://127.0.0.1:5000/api/")
+    .constant("baseURL_flask","http://0.0.0.0:5000/api/")
 
 
     .factory('AuthFactory', ['$http', 'baseURL_flask', 
