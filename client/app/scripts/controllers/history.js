@@ -156,8 +156,8 @@ angular.module('timeclubAngularApp')
             confR = window.confirm(msgService.getMsg("confirmBackToMain"));
             if (confR){//confirmed
               $scope.clients[k].checkoutTime = null;
-              $scope.clients[k].timeInClub = 0;
-              $scope.clients[k].amount = 0;              
+              $scope.clients[k].timeInClub = null;
+              $scope.clients[k].amount = 0;
               $scope.clients[k].isOpen = true;
               //console.log('$scope.clients[k]',$scope.clients[k])
               clientFactory.updateItem($scope.clients[k])

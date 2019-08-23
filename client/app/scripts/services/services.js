@@ -12,9 +12,11 @@ angular.module('timeclubAngularApp')
 
 
     
-    //constants baseURL and serverTimeURL for production mode
-    //.constant("baseURL_flask","http://127.0.0.1:5000/api/")
-    .constant("baseURL_flask","http://45.11.27.180:5000/api/")
+    //constant baseURL_flask for local dev
+    .constant("baseURL_flask","http://127.0.0.1:5000/api/")
+    //constant baseURL_flask for production mode
+    //.constant("baseURL_flask","http://45.11.27.180:5000/api/")
+    
 
 
     .factory('AuthFactory', ['$http', 'baseURL_flask', 
@@ -25,7 +27,7 @@ angular.module('timeclubAngularApp')
         //get token
         dataFactory.login = function (username,password) {
             $http.defaults.headers.common['Authorization'] = "Basic "+btoa(username+":"+password);
-            return $http.post(urlBase);           
+            return $http.post(urlBase);
         };
 
         dataFactory.logout = function () {//удалить токен

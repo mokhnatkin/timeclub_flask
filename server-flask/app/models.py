@@ -140,7 +140,7 @@ class Booking(CollectionAPIMixin,db.Model):#bookings
 
 class Clientlist(CollectionAPIMixin,db.Model):#list of clients
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(50),index=True,nullable=False)
+    name = db.Column(db.String(50))
     phone = db.Column(db.String(20),index=True,nullable=False)
     timestamp = db.Column(db.DateTime,default=datetime.utcnow)
     birthdate = db.Column(db.DateTime)
@@ -299,20 +299,11 @@ class Clients(CollectionAPIMixin,db.Model):#clients
                 elif field in ['checkoutTime','arrivalTime']:                
                     dTime = dateutil.parser.parse(data[field])
                     setattr(self,field,dTime)
-            elif field in ['promotion','comment','companyN']:
+            elif field in ['promotion','comment','companyN','checkoutTime','timeInClub','amount']:
                 setattr(self,field,data[field])
 
     def __repr__(self):
         return '<Client {}>'.format(self.name)
 
 
-class Const(db.Model):#constants
-    id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(50),index=True,nullable=False,unique=True)
-    value = db.Column(db.Float,nullable=False)
-    description = db.Column(db.String(500),nullable=False)
-    isSelected = db.Column(db.Boolean)
-    timestamp = db.Column(db.DateTime,default=datetime.utcnow)
 
-    def __repr__(self):
-        return '<Const {}>'.format(self.name)
