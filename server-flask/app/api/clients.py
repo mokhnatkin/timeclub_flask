@@ -56,18 +56,16 @@ def delete_client(id):
     return '', 204
 
 
-@bp.route('/employees/<checkout_start>/<checkout_end>',methods=['GET'])#get the items filtered by isEmployee, isDirector
+@bp.route('/employees/<checkout_start>/<checkout_end>',methods=['GET'])
 @token_auth.login_required
 def get_clients_employees(checkout_start,checkout_end):
     #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
     _checkout_start = dateutil.parser.parse(checkout_start)
-    _checkout_end = dateutil.parser.parse(checkout_end)
-    start = _checkout_start.date()
-    end = _checkout_end.date() + timedelta(days=1)
-    resources = Clients.query.filter(Clients.isEmployee == True) \
+    _checkout_end = dateutil.parser.parse(checkout_end)    
+    
+    resources = Clients.query.filter(Clients.checkoutTime.between(_checkout_start, _checkout_end)) \
+                            .filter(Clients.isEmployee == True) \
                             .filter(Clients.isDirector == False) \
-                            .filter(Clients.checkoutTime > start) \
-                            .filter(Clients.checkoutTime < end) \
                             .filter(Clients.isOpen == False).all()
     data = Clients.to_collection_dict(resources)
     return jsonify(data)
@@ -87,10 +85,7 @@ def get_clients_checkout(checkout_start,checkout_end):
     #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
     _checkout_start = dateutil.parser.parse(checkout_start)
     _checkout_end = dateutil.parser.parse(checkout_end)
-    start = _checkout_start.date()
-    end = _checkout_end.date() + timedelta(days=1)
-    resources = Clients.query.filter(Clients.isOpen == False) \
-                            .filter(Clients.checkoutTime > start) \
-                            .filter(Clients.checkoutTime < end).all()
+    resources = Clients.query.filter(Clients.checkoutTime.between(_checkout_start, _checkout_end)) \
+                            .filter(Clients.isOpen == False).all()
     data = Clients.to_collection_dict(resources)
     return jsonify(data)

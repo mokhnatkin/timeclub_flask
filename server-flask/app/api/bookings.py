@@ -58,9 +58,9 @@ def delete_booking(id):
 @bp.route('/bookings_today',methods=['GET'])#get the items filtered by date
 @token_auth.login_required
 def get_bookings_today():
-    start = datetime.utcnow().date() - timedelta(days=1)
-    end = start + timedelta(days=2)
-    resources = Booking.query.filter(Booking.date > start).filter(Booking.date < end).all()
+    start = datetime.utcnow().date()
+    end = start + timedelta(days=1)    
+    resources = Booking.query.filter(Booking.date.between(start, end)).all()    
     data = Booking.to_collection_dict(resources)
     return jsonify(data)
 
@@ -68,8 +68,8 @@ def get_bookings_today():
 @bp.route('/bookings_today_future',methods=['GET'])#get the items filtered by date
 @token_auth.login_required
 def get_bookings_today_future():
-    start = datetime.utcnow().date() - timedelta(days=1)    
-    resources = Booking.query.filter(Booking.date > start).all()
+    start = datetime.utcnow().date()
+    resources = Booking.query.filter(Booking.date >= start).all()
     data = Booking.to_collection_dict(resources)
     return jsonify(data)
 
@@ -78,8 +78,8 @@ def get_bookings_today_future():
 @token_auth.login_required
 def get_bookings_last_year():
     start = datetime.utcnow().date() - timedelta(days=365)
-    end = start - timedelta(days=358)
-    resources = Booking.query.filter(Booking.date > start).filter(Booking.date < end).all()
+    end = datetime.utcnow().date() - timedelta(days=358)
+    resources = Booking.query.filter(Booking.date.between(start, end)).all()
     data = Booking.to_collection_dict(resources)
     return jsonify(data)
     

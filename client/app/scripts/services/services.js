@@ -15,7 +15,6 @@ angular.module('timeclubAngularApp')
     //constant baseURL_flask for local dev
     //.constant("baseURL_flask","http://127.0.0.1:5000/api/")
     //constant baseURL_flask for production mode
-    //.constant("baseURL_flask","http://45.11.27.180:5000/api/")
     .constant("baseURL_flask","https://nekafesoft.com:443/api/")
     
     
@@ -105,7 +104,7 @@ angular.module('timeclubAngularApp')
 
         $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
 
-        dataFactory.getItems = function (checkout_start,checkout_end) {
+        dataFactory.getItems = function (checkout_start,checkout_end) {           
             return $http.get(urlBase + '/' + checkout_start + '/' + checkout_end);
         };
         return dataFactory;
