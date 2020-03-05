@@ -11,7 +11,7 @@ angular.module('timeclubAngularApp')
   .controller('LoginCtrl', ['$scope', '$state', 'AuthFactory', '$location','$rootScope','staffFactory','localStorageService','msgService','$window',
     function ($scope, $state, AuthFactory, $location,$rootScope,staffFactory,localStorageService,msgService,$window) {
 
-      $scope.login = function () {      
+      $scope.login = function () {
       AuthFactory.login(this.username, this.password)//trying fetch date and time from server
       .then(function(response) {
           var response_obj = response.data;//token from server
@@ -43,7 +43,7 @@ angular.module('timeclubAngularApp')
           //console.log("cannot get token",error);
           window.alert(msgService.getMsg("cannotLogin"));
       });
-    };    
+    };
 
     $scope.cancelLogin = function () {
         $scope.username = "";

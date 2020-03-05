@@ -14,9 +14,8 @@ angular.module('timeclubAngularApp')
     
     //constant baseURL_flask for local dev
     //.constant("baseURL_flask","http://127.0.0.1:5000/api/")
-    //constant baseURL_flask for production mode
-    .constant("baseURL_flask","https://nekafesoft.com:443/api/")
-    
+    //constant baseURL_flask for production mode http://localhost:8000
+    .constant("baseURL_flask","http://localhost/api/")
     
 
 
@@ -38,6 +37,7 @@ angular.module('timeclubAngularApp')
         return dataFactory;
     }])
 
+    
    .factory('serverTimeFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
    function($http,baseURL_flask,get_token_from_local_storage) {
         var urlBase = baseURL_flask + 'time';

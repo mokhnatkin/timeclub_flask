@@ -81,6 +81,7 @@ angular.module('timeclubAngularApp')
 
     ///////////////////////////////////////////////////////
 
+
     $scope.getPromoNameById = function(promoId){//returns promo name
       var promoName;
       promoName = promoDetails.getNameById(promoId,$scope.promotions);
