@@ -937,8 +937,8 @@ angular.module('timeclubAngularApp')
 
                     /////////////////////////////////all constants used
                     const constArr = [
-                        {name:"pricePerMinute",         value:10,   desc:"Цена за минуту, тг"},
-                        {name:"maxAmount",              value:3000, desc:"Максимальный чек, тг"},
+                        {name:"pricePerMinute",         value:13,   desc:"Цена за минуту, тг"},
+                        {name:"maxAmount",              value:4000, desc:"Максимальный чек, тг"},
                         {name:"startDay",               value:6,    desc:"Первый день отчетного месяца"},
                         {name:"startDayHH",             value:10,   desc:"Старт первого дня ЧАСЫ"},
                         {name:"startDayMM",             value:0,    desc:"Старт первого дня МИНУТЫ"},
