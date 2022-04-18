@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from time import time
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-#from flask_login import UserMixin
 from flask import app
 from app.universal_routes import convert_string_to_bool
 import dateutil.parser
@@ -59,7 +58,7 @@ class User(CollectionAPIMixin,db.Model):#user model
     def __repr__(self):
         return '<User {}>'.format(self.username)
     
-    def get_token(self,expires_in=864000):#by default token is valid for 10 days
+    def get_token(self,expires_in=2592000):#by default token is valid for 30 days
         now = datetime.utcnow()
         if self.token and self.token_expiration > now + timedelta(seconds=60):
             return self.token
@@ -215,7 +214,6 @@ class Promotion(CollectionAPIMixin,db.Model):#promo
     isActive = db.Column(db.Boolean,nullable=False,default=True)
     isSelected = db.Column(db.Boolean)
     timestamp = db.Column(db.DateTime,default=datetime.utcnow)
-    #clients_by_item = db.relationship('Clients',backref='promotion',lazy='dynamic')
 
     def to_dict(self):
         data = {
@@ -239,7 +237,7 @@ class Promotion(CollectionAPIMixin,db.Model):#promo
                     setattr(self,field,convert_string_to_bool(data[field]))
 
     def __repr__(self):
-        return '<Promotion {}>'.format(self.name)    
+        return '<Promotion {}>'.format(self.name)
 
 
 class Clients(CollectionAPIMixin,db.Model):#clients
@@ -306,4 +304,33 @@ class Clients(CollectionAPIMixin,db.Model):#clients
         return '<Client {}>'.format(self.name)
 
 
+class Const(CollectionAPIMixin,db.Model):#constants
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(50),unique=True,nullable=False)
+    description = db.Column(db.String(500))
+    value = db.Column(db.Float,nullable=False)    
+    isSelected = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime,default=datetime.utcnow)
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'value': self.value,
+            'isSelected': self.isSelected,
+            'timestamp': self.timestamp.isoformat()+'Z'
+        }
+        return data
+
+    def from_dict(self,data):
+        for field in data:
+            if data[field] is not None:
+                if field not in ['id','timestamp','isSelected']:#update all fields except for non-updatable
+                    setattr(self,field,data[field])
+                elif field == 'isSelected':#boolean fields
+                    setattr(self,field,convert_string_to_bool(data[field]))
+
+    def __repr__(self):
+        return '<Const {}>'.format(self.name)
 

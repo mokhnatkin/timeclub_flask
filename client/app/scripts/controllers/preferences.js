@@ -8,8 +8,8 @@
  * Controller of the timeclubAngularApp
  */
 angular.module('timeclubAngularApp')
-  .controller('PreferencesCtrl', ['$scope','promotionFactory','$state','staffFactory','$rootScope','msgService','textConsts','emplFactory',
-  function ($scope, promotionFactory, $state, staffFactory,$rootScope,msgService,textConsts,emplFactory) {
+  .controller('PreferencesCtrl', ['$scope','promotionFactory','$state','staffFactory','$rootScope','msgService','textConsts','emplFactory','constFactory',
+  function ($scope, promotionFactory, $state, staffFactory,$rootScope,msgService,textConsts,emplFactory,constFactory) {
     $scope.showInfo = false;
     $scope.showEmps = false;
     $scope.showChngPwdModal = false;
@@ -22,6 +22,7 @@ angular.module('timeclubAngularApp')
     $scope.currentUserId = $rootScope.currentUserId;
     
 
+    //////////////////////////////////////////////////////////////////////////////////
     emplFactory.getItems()  //fetch employees from the REST server      
       .then(function(response) {
         $scope.employees = response.data;
@@ -32,6 +33,7 @@ angular.module('timeclubAngularApp')
         window.alert("emplFactory: "+msgService.getMsg("cannotQueryData"));
       });
     
+    //////////////////////////////////////////////////////////////////////////////////
     $scope.showPromos = false;
  
     promotionFactory.getItems()
@@ -40,10 +42,11 @@ angular.module('timeclubAngularApp')
                   $scope.showPromos = true;
               }, function (error) {
                   $scope.status = 'Unable to load promotions data: ' + error.message;
-              }); 
+              });
 
     $scope.showUsers = false;
-
+    
+    //////////////////////////////////////////////////////////////////////////////////
     staffFactory.getItems()  //fetch users from the REST server
       .then(function(response) {
         $scope.staffs = response.data; //all users are now in this array
@@ -51,9 +54,9 @@ angular.module('timeclubAngularApp')
         },
       function(error) {
         window.alert("staffFactory: "+msgService.getMsg("cannotQueryData"));
-    });    
+    });
     
-
+  //////////////////////////////////////////////////////////////////////////////////
     //$scope.newPromotion = new promotionFactory();
     $scope.newPromotion = {
       name: '',
@@ -79,14 +82,12 @@ angular.module('timeclubAngularApp')
             $scope.status = 'Unable to create promotion: ' + error.message;
             console.log($scope.status);
         });
-        //$state.reload(); //update the list of promotions
       } else { //not admin
         $scope.cancelAddingPromotion();
         window.alert(msgService.getMsg("adminRoleNeeded"));
       };
     };
   
-
     $scope.toggleAddPromotionModal = function(){ //toggle Add promotion modal
       $scope.showAddPromotionModal = !$scope.showAddPromotionModal;
     };
@@ -124,7 +125,8 @@ angular.module('timeclubAngularApp')
       };
     } else {window.alert(msgService.getMsg("selectTheRowToChange"));};      
   };
-
+  
+    //////////////////////////////////////////////////////////////////////////////////
     $scope.roles = [{'name':'user'},
                     {'name':'admin'}]
 
@@ -157,7 +159,7 @@ angular.module('timeclubAngularApp')
       };
   };    
 
-    
+    //////////////////////////////////////////////////////////////////////////////////
     $scope.showAddEmployeeModal = false;
     $scope.toggleAddEmployeeModal = function(){ //toggle Add employee modal
         $scope.showAddEmployeeModal = !$scope.showAddEmployeeModal;
@@ -219,6 +221,7 @@ angular.module('timeclubAngularApp')
       } else {window.alert(msgService.getMsg("adminRoleNeeded"));};
     };
 
+    //////////////////////////////////////////////////////////////////////////////////
     $scope.showAddUserModal = false;
     $scope.toggleAddUserModal = function(){ //toggle Add guest modal
         $scope.showAddUserModal = !$scope.showAddUserModal;
@@ -282,8 +285,6 @@ angular.module('timeclubAngularApp')
       $scope.showChngPwdModal = !$scope.showChngPwdModal;
     };
 
-    
-
     $scope.this_user = {
       'id': $scope.currentUserId,
       'password': ''
@@ -315,10 +316,96 @@ angular.module('timeclubAngularApp')
       
     };
 
-    
-
     $scope.cancelChangePassword = function(){ //cancel Change pwd - clear fields and hide the modal      
       $scope.showChngPwdModal = !$scope.showChngPwdModal;
+    };
+
+    //////////////////////////////////////////////////////////////////////////////////
+    constFactory.getItems()
+    .then(function (response) {
+        $scope.constsDB = response.data;
+        //$scope.showConstsDB = true;
+    }, function (error) {
+        $scope.status = 'Unable to load constants data: ' + error.message;
+    });
+
+    $scope.newConst = {
+      name: '',
+      description: '',
+      value: 0
+    };
+
+    $scope.addConst = function(){//add new const
+      if($rootScope.isAdmin){
+        constFactory.createItem($scope.newConst)
+        .then(function (response) {            
+            console.log('Item created');
+            $scope.constsDB.push($scope.newConst);
+            $scope.showAddConstModal = !$scope.showAddConstModal;
+        }, function(error) {
+            $scope.status = 'Unable to create const: ' + error.message;
+            console.log($scope.status);
+        });
+      } else { //not admin
+        $scope.cancelAddingConst();
+        window.alert(msgService.getMsg("adminRoleNeeded"));
+      };
+    };
+  
+    $scope.toggleAddConstModal = function(){ //toggle Add const modal
+      $scope.showAddConstModal = !$scope.showAddConstModal;
+    };
+
+    $scope.cancelAddingConst = function(){ //cancel Adding const - clear fields and hide the modal
+      $scope.newConst = {};
+      $scope.showAddConstModal = !$scope.showAddConstModal;      
+    };
+    
+    $scope.constToEdit = {
+      name: '',
+      description: '',
+      value: 0
     };    
+
+    $scope.ToggleEditConstModal = function(){//toggle Edit const modal
+      $scope.constSelected = false;//is there any const selected?
+      var N;
+      var countSelected = 0;
+      N = $scope.constsDB.length;
+      for (var i = 0; i < N; i++){
+        $scope.constSelected = $scope.constSelected || $scope.constsDB[i].isSelected;//is there any const selected?
+        if ($scope.constsDB[i].isSelected){
+          countSelected = countSelected+1;
+        }
+      };//end for
+      if (countSelected == 1) {
+        if($rootScope.isAdmin){
+          for (i = 0; i < N; i++){
+            if ($scope.constsDB[i].isSelected){
+              $scope.constsDB[i].isSelected = !$scope.constsDB[i].isSelected;
+              $scope.constToEdit = $scope.constsDB[i];
+              $scope.showEditConstModal = !$scope.showEditConstModal;
+            };//end if
+          };
+        } else {
+          window.alert(msgService.getMsg("adminRoleNeeded"));
+        };
+      } else {window.alert(msgService.getMsg("selectTheRowToChange"));};      
+    };
+
+    $scope.editConstDB = function(){ //edit const DB
+      constFactory.updateItem($scope.constToEdit)
+      .then(function (response) {
+          console.log('Item updated');
+          $scope.showEditConstModal = !$scope.showEditConstModal;
+      }, function (error) {
+          console.log('Item cannot be updated:'+ error.message);                
+      });
+    };
+
+    $scope.cancelEditConst = function(){ //cancel Edit const - clear fields and hide the modal
+      $scope.constToEdit = {};
+      $scope.showEditConstModal = !$scope.showEditConstModal;      
+    };
 
   }]);

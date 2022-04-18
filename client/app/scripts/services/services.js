@@ -110,6 +110,7 @@ angular.module('timeclubAngularApp')
         return dataFactory;
     }])
 
+
     .factory('employeeWagesFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
         var urlBase = baseURL_flask + 'employees';
@@ -159,6 +160,7 @@ angular.module('timeclubAngularApp')
         return dataFactory;
     }])
 
+
     .factory('emplFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
 
@@ -188,9 +190,9 @@ angular.module('timeclubAngularApp')
         };            
 
         return dataFactory;
-    }])    
+    }])
 
-    
+
     .factory('bookingFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
 
@@ -221,6 +223,7 @@ angular.module('timeclubAngularApp')
 
         return dataFactory;
     }])
+
 
     .factory('bookingFactoryToday', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
@@ -307,57 +310,88 @@ angular.module('timeclubAngularApp')
         return dataFactory;
     }])    
 
-    .service('guestCompute',['$rootScope', 'textConsts', function($rootScope,textConsts)
+    .service('guestCompute',['$rootScope', 'textConsts','constFactory','msgService', function($rootScope,textConsts,constFactory,msgService)
     {
         this.modifyGuestArr = function(inArr,promotions,currentDateTime)//computes minutes in club and amount for each guest
         {
             var outArr = inArr;
-            //console.log('input array',inArr)
             var N = inArr.length;
-            var pricePerMinute = textConsts.getConstValueByName("pricePerMinute");
-            var maxAmount = textConsts.getConstValueByName("maxAmount");
-            for (var i = 0; i < N; i++) {
-                var k, j, promoType, promoValue;
-                k = 1;
-                if(outArr[i].checkoutTime != null || outArr[i].checkoutTime != undefined){
-                    outArr[i].timeInClub = Math.floor(Math.abs(Date.parse(outArr[i].arrivalTime)-Date.parse(outArr[i].checkoutTime))/60000);//time in the club
-                } else {
-                    outArr[i].timeInClub = Math.floor(Math.abs(Date.parse(outArr[i].arrivalTime)-Date.parse(currentDateTime))/60000);//time in the club};
-                };
-                if(outArr[i].isFree || outArr[i].isEmployee){//free guest or employee
-                    outArr[i].amount = 0; //a free guest
-                } else { //guest who pay
-                    if (outArr[i].promotion != null || outArr[i].promotion != undefined) {//promotion
-                        j = 0;
-                        var notFound = true;
-                        while(notFound){
-                            if(promotions[j].id == outArr[i].promotion){
-                                promoType = promotions[j].type;
-                                promoValue = promotions[j].value;
-                                notFound = false;
-                            } else {
-                                j++;
-                                if(j>=promotions.length){
-                                    notFound = false;//promotion not found
+            var pricePerMinute = 0;
+            var maxAmount = 0;
+            var constArr = [];
+
+            constFactory.getItems()
+            .then(function (response) {
+                constArr = response.data;
+                if (constArr.length == 0) {
+                    window.alert(msgService.getMsg("basicConstsNotSet"));
+                    return
+                }
+
+                for (var i = 0; i < constArr.length; i++) {
+                    if(constArr[i].name == "pricePerMinute"){
+                        pricePerMinute = constArr[i].value
+                    }
+                    else if (constArr[i].name == "maxAmount") {
+                        maxAmount = constArr[i].value
+                    }
+                }
+
+                if (pricePerMinute == 0 ){
+                    window.alert(msgService.getMsg("basicConstsNotSet_price"));
+                    return
+                }
+
+                if (maxAmount == 0 ){
+                    window.alert(msgService.getMsg("basicConstsNotSet_max"));
+                    return
+                }                
+           
+                for (var i = 0; i < N; i++) {
+                    var k, j, promoType, promoValue;
+                    k = 1;
+                    if(outArr[i].checkoutTime != null || outArr[i].checkoutTime != undefined){
+                        outArr[i].timeInClub = Math.floor(Math.abs(Date.parse(outArr[i].arrivalTime)-Date.parse(outArr[i].checkoutTime))/60000);//time in the club
+                    } else {
+                        outArr[i].timeInClub = Math.floor(Math.abs(Date.parse(outArr[i].arrivalTime)-Date.parse(currentDateTime))/60000);//time in the club};
+                    };
+                    if(outArr[i].isFree || outArr[i].isEmployee){//free guest or employee
+                        outArr[i].amount = 0; //a free guest
+                    } else { //guest who pay
+                        if (outArr[i].promotion != null || outArr[i].promotion != undefined) {//promotion
+                            j = 0;
+                            var notFound = true;
+                            while(notFound){
+                                if(promotions[j].id == outArr[i].promotion){
+                                    promoType = promotions[j].type;
+                                    promoValue = promotions[j].value;
+                                    notFound = false;
+                                } else {
+                                    j++;
+                                    if(j>=promotions.length){
+                                        notFound = false;//promotion not found
+                                    };
                                 };
                             };
-                        };
-                        if (promoType == "fixAmount") {//fix amount promotion
-                            outArr[i].amount = promoValue;
-                        } else {
-                            if (promoType == "fixDiscount") {
-                                k=(1-promoValue/100);//discount promotion
-                                outArr[i].amount = Math.min(k * pricePerMinute * outArr[i].timeInClub, k * maxAmount);//promotion applied; k for discount
+                            if (promoType == "fixAmount") {//fix amount promotion
+                                outArr[i].amount = promoValue;
                             } else {
-                                outArr[i].amount = Math.min(pricePerMinute * outArr[i].timeInClub, maxAmount);//cannot determine promotion type - apply standard rate
+                                if (promoType == "fixDiscount") {
+                                    k=(1-promoValue/100);//discount promotion
+                                    outArr[i].amount = Math.min(k * pricePerMinute * outArr[i].timeInClub, k * maxAmount);//promotion applied; k for discount
+                                } else {
+                                    outArr[i].amount = Math.min(pricePerMinute * outArr[i].timeInClub, maxAmount);//cannot determine promotion type - apply standard rate
+                                };
                             };
+                        } else {//standard guest
+                            outArr[i].amount = Math.min(pricePerMinute * outArr[i].timeInClub, maxAmount);//amount to be paid KZT - standard rate
                         };
-                    } else {//standard guest
-                        outArr[i].amount = Math.min(pricePerMinute * outArr[i].timeInClub, maxAmount);//amount to be paid KZT - standard rate
                     };
                 };
-            };
-            //console.log('output array',outArr)
+
+            }, function (error) {
+                $scope.status = 'Unable to load constants data: ' + error.message;
+            });
             return outArr;
         };
 
@@ -627,7 +661,6 @@ angular.module('timeclubAngularApp')
                 };
                 return result;
             };
-
     }])
 
 
@@ -662,6 +695,7 @@ angular.module('timeclubAngularApp')
         return dataFactory;
     }])    
 
+
     .service('userDetails',[function()//returns user's name based on user's id
     {
         this.getUserNameByUserId = function(userId,staffs)
@@ -685,6 +719,7 @@ angular.module('timeclubAngularApp')
         };
     }])
 
+
     .service('promoDetails',[function()//returns promotion's name based on its id
         {
             this.getNameById = function(promoId,promotions){
@@ -707,6 +742,7 @@ angular.module('timeclubAngularApp')
                 return promoName;
             };
         }])
+
 
     .service('rowColorsGuests',[function()//sets row color
         {
@@ -738,7 +774,6 @@ angular.module('timeclubAngularApp')
     }])
 
 
-
     .service('get_token_from_local_storage',['localStorageService',
     function(localStorageService)//get token
         {
@@ -750,7 +785,6 @@ angular.module('timeclubAngularApp')
                 return 'Bearer ' + token;
             };
     }])
-
 
 
     .service('rowColorsBookings',[function()//set row color depending on guest
@@ -770,6 +804,7 @@ angular.module('timeclubAngularApp')
                 return rowClass;
             };
     }])
+
 
     .service('convertMMtoDDHHMM',[function()
         {
@@ -800,6 +835,7 @@ angular.module('timeclubAngularApp')
             };
     }])
 
+
     .service('checkoutService',[function()//this service helps using the data on guests to checkout from MainCtrl
         {
             var arrStored = [];
@@ -815,6 +851,7 @@ angular.module('timeclubAngularApp')
                 return dateTimeStored;
             };
         }])
+
 
     .service('msgService',[function()//this service contains console.log messages and window.alert notifications used in controllers
             {
@@ -846,7 +883,10 @@ angular.module('timeclubAngularApp')
                     {name:"cannotDeleteAdminUser",  text:"Не могу удалить пользователя с расширенными правами"},
                     {name:"cannotLogin",            text:"Не могу войти. Проверьте логин и пароль."},
                     {name:"cannotUpdateThisBooking",text:"Изменять можно только брони со статусом Новая"},
-                    {name:"confirmBackToMain",      text:"Гость будет возвращён в Зал. Подтвердите."}
+                    {name:"confirmBackToMain",      text:"Гость будет возвращён в Зал. Подтвердите."},
+                    {name:"basicConstsNotSet_price",text:"Не задана базовая константа - цена за минуту (pricePerMinute). Зайдите в Настройки под аминистратором и задайте константу!"},
+                    {name:"basicConstsNotSet_max",  text:"Не задана базовая константа - максимальный чек (maxAmount). Зайдите в Настройки под аминистратором и задайте константу!"},
+                    {name:"basicConstsNotSet",      text:"Не заданы базовые константы - Цена за минуту (pricePerMinute) и Максимальный чек (maxAmount). Зайдите в Настройки под аминистратором и задайте константы!"}
                 ];
 
                 this.getMsg = function(inputName){//function returns message text
@@ -867,6 +907,7 @@ angular.module('timeclubAngularApp')
                     return txt;
                 };
         }])
+
 
     .service('guestFilterFactory',[function()
         {
@@ -916,6 +957,7 @@ angular.module('timeclubAngularApp')
               };
         }])
 
+
     .service('textConsts',[function()//this service contains all constants
                 {
                     const calendarSettings = [
@@ -936,15 +978,12 @@ angular.module('timeclubAngularApp')
                     const oneDayInMSec = 24*3600*1000;//one day in milliseconds
 
                     /////////////////////////////////all constants used
-                    const constArr = [
-                        {name:"pricePerMinute",         value:13,   desc:"Цена за минуту, тг"},
-                        {name:"maxAmount",              value:3900, desc:"Максимальный чек, тг"},
+                    const constArr = [                        
                         {name:"startDay",               value:6,    desc:"Первый день отчетного месяца"},
                         {name:"startDayHH",             value:10,   desc:"Старт первого дня ЧАСЫ"},
                         {name:"startDayMM",             value:0,    desc:"Старт первого дня МИНУТЫ"},
                         {name:"usersSeeHistoryMin",     value:30,   desc:"Сколько минут истории видят пользователи"},
-                        {name:"adminWagePerHour",       value:300,  desc:"З/п админа за час, тг"},
-                        //{name:"pastYearBookingsPeriod", value:7,    desc:"За сколько дней показывать прошлогодние брони"},
+                        {name:"adminWagePerHour",       value:700,  desc:"З/п админа за час, тг"},
                         {name:"companiesMaxNum",        value:50,   desc:"Макс. кол-во компаний (зал, добавление гостя)"}
                     ];
 
@@ -985,7 +1024,7 @@ angular.module('timeclubAngularApp')
                         return constArr;
                     };
 
-                    this.getConstValueByName = function(inputConstName)
+                    this.getConstValueByName = function(inputConstName)//from test of this script
                     {
                         var notFound = true;
                         var i=0;
@@ -1003,7 +1042,34 @@ angular.module('timeclubAngularApp')
                         }
                         return constValue;
                     };
-
         }])
+
+        
+        .factory('constFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+        function($http,baseURL_flask,get_token_from_local_storage) {
+    
+            var urlBase = baseURL_flask+'consts';
+            var dataFactory = {};
+    
+            $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
+    
+            dataFactory.getItems = function () {
+                return $http.get(urlBase);
+            };
+        
+            dataFactory.getItem = function (id) {
+                return $http.get(urlBase + '/' + id);
+            };
+        
+            dataFactory.createItem = function (item) {
+                return $http.post(urlBase, item);
+            };
+        
+            dataFactory.updateItem = function (item) {
+                return $http.put(urlBase + '/' + item.id, item)
+            };
+        
+            return dataFactory;
+        }])        
 
     ;
