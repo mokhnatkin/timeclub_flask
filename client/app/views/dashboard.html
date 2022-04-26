@@ -19,12 +19,12 @@
         <tbody>
           <tr>
             <td><strong>Сейчас в Некафе</strong> (в зале):</td>
-            <td align="right"><strong>{{outStatNow[5] | number:0 }}</strong></td>
-            <td>{{outStatNow[0]}}</td>
-            <td>{{outStatNow[1]}}</td>
-            <td>{{outStatNow[2]}}</td>
-            <td>{{outStatNow[3]}}</td>
-            <td>{{outStatNow[4]}}</td>            
+            <td align="right"><strong>{{outStatNow.amount | number:0 }}</strong></td>
+            <td>{{outStatNow.total_people}}</td>
+            <td>{{outStatNow.total_employees}}</td>
+            <td>{{outStatNow.total_guests}}</td>
+            <td>{{outStatNow.paid_guests}}</td>
+            <td>{{outStatNow.free_guests}}</td>            
           </tr>
           <tr>
             <td><strong>Некафе за сегодня:</strong> начиная с <strong>{{startDate | date: 'dd.MM.y H:mm:ss'}}</strong></td>

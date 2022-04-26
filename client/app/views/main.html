@@ -17,29 +17,29 @@
           </tr>
           <tr>
               <td class="narrowColumn"><strong>Сумма</strong></td>
-              <td class="narrowColumn"><strong>{{outStatNow[5] | number:0}}</strong></td>
+              <td class="narrowColumn"><strong>{{outStatNow.amount | number:0}}</strong></td>
           </tr>
           <tr>
             <td class="narrowColumn"><strong>Всего людей</strong></td>
-            <td class="narrowColumn"><strong>{{outStatNow[0]}}</strong></td>
+            <td class="narrowColumn"><strong>{{outStatNow.total_people}}</strong></td>
           </tr>
           <tr class="success">
               <td class="narrowColumn"><strong>Сотрудников</strong></td>
-              <td class="narrowColumn"><strong>{{outStatNow[1]}}</strong></td>
+              <td class="narrowColumn"><strong>{{outStatNow.total_employees}}</strong></td>
             </tr>          
           <tr>
             <td class="narrowColumn"><strong>Всего гостей</strong></td>
-            <td class="narrowColumn"><strong>{{outStatNow[2]}}</strong></td>
+            <td class="narrowColumn"><strong>{{outStatNow.total_guests}}</strong></td>
           </tr>
           <tr class="default">
               <td class="narrowColumn">Платно</td>
-              <td class="narrowColumn">{{outStatNow[3]}}</td>
+              <td class="narrowColumn">{{outStatNow.paid_guests}}</td>
           </tr>
           <tr class="danger">
               <td class="narrowColumn">Бесплатно</td>
-              <td class="narrowColumn">{{outStatNow[4]}}</td>
+              <td class="narrowColumn">{{outStatNow.free_guests}}</td>
           </tr>
-          <!--<option ng-repeat="promotion in promotions" value="{{promotion.id}}">{{promotion.name}}-->
+          
         </table>
       </div>
     </div>

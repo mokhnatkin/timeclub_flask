@@ -345,7 +345,12 @@ angular.module('timeclubAngularApp')
                 if (maxAmount == 0 ){
                     window.alert(msgService.getMsg("basicConstsNotSet_max"));
                     return
-                }                
+                }
+                
+                //console.log('guestCompute service, modifyGuestArr function');
+                //console.log('pricePerMinute=',pricePerMinute,';maxAmount=',maxAmount)
+                //console.log('input array:',inArr)
+                
            
                 for (var i = 0; i < N; i++) {
                     var k, j, promoType, promoValue;
@@ -389,6 +394,8 @@ angular.module('timeclubAngularApp')
                     };
                 };
 
+                //console.log('output array:',outArr)
+
             }, function (error) {
                 $scope.status = 'Unable to load constants data: ' + error.message;
             });
@@ -404,13 +411,17 @@ angular.module('timeclubAngularApp')
             var totalNormalGuests = 0;
             var totalEmployees = 0;
             var totalGuests = 0;
+            //console.log(outArr[1].amount);
             for (var i = 0; i < N; i++) {
+                //console.log('guest #',i,'amount=',outArr[i].amount,'total=',totalAmount);
                 if (outArr[i].isEmployee) {
                     totalEmployees++;
                 } else {
                     if (outArr[i].isFree){
                         totalGuestsFree++;
-                    } else {totalAmount = totalAmount + outArr[i].amount;};
+                    } else {
+                        totalAmount = totalAmount + outArr[i].amount;
+                    };
                 };
             };
             var outStat = [];
@@ -1070,6 +1081,20 @@ angular.module('timeclubAngularApp')
             };
         
             return dataFactory;
-        }])        
+        }])
+
+
+        .factory('guestsOutStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+        function($http,baseURL_flask,get_token_from_local_storage) {
+            var urlBase = baseURL_flask + 'guests_stat';
+            var dataFactory = {};
+            
+            $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
+    
+            dataFactory.getItems = function () {
+                return $http.get(urlBase);
+            };
+            return dataFactory;
+        }])
 
     ;

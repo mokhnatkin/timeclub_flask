@@ -8,8 +8,8 @@
  * Controller of the timeclubAngularApp
  */
 angular.module('timeclubAngularApp')
-  .controller('MainCtrl', ['$scope','guestFactory','guestCompute', 'clientFactory','activePromotionFactory','$state','promoDetails','rowColorsGuests','checkoutService', 'msgService','convertMMtoDDHHMM','guestFilterFactory','emplFactory','textConsts','serverTimeFactory',
-  function ($scope, guestFactory, guestCompute, clientFactory, activePromotionFactory, $state, promoDetails, rowColorsGuests, checkoutService, msgService,convertMMtoDDHHMM,guestFilterFactory,emplFactory,textConsts,serverTimeFactory) {
+  .controller('MainCtrl', ['$scope','guestFactory','guestCompute', 'clientFactory','activePromotionFactory','$state','promoDetails','rowColorsGuests','checkoutService', 'msgService','convertMMtoDDHHMM','guestFilterFactory','emplFactory','textConsts','serverTimeFactory','guestsOutStatFactory',
+  function ($scope, guestFactory, guestCompute, clientFactory, activePromotionFactory, $state, promoDetails, rowColorsGuests, checkoutService, msgService,convertMMtoDDHHMM,guestFilterFactory,emplFactory,textConsts,serverTimeFactory,guestsOutStatFactory) {
     //var token = get_token_from_local_storage.get_token();
     //console.log('MainCtrl token from local storage',token)
     $scope.showGuests = false;//show / hide table with guests
@@ -48,14 +48,28 @@ angular.module('timeclubAngularApp')
                   $scope.currentTimeToShow = currentDateTime;
                   //console.log('currentDateTime',currentDateTime);
                   $scope.guests = guestCompute.modifyGuestArr($scope.guests,$scope.promotions,currentDateTime);
-                  $scope.outStatNow = guestCompute.computeGuestStat($scope.guests);
+                  //console.log($scope.guests)
+                  guestsOutStatFactory.getItems()
+                    .then(function(response){
+                      $scope.outStatNow = response.data;
+                    },
+                    function(error) {
+                      console.log('Cannot compute guests stat')
+                    });
+                  //$scope.outStatNow = guestCompute.computeGuestStat($scope.guests);
                   $scope.showGuests = true;
               },
               function(error) {
                   currentDateTime = new Date();//if fails, use local machine date & time
                   $scope.currentTimeToShow = currentDateTime;
                   $scope.guests = guestCompute.modifyGuestArr($scope.guests,$scope.promotions,currentDateTime);
-                  $scope.outStatNow = guestCompute.computeGuestStat($scope.guests);
+                  guestsOutStatFactory.getItems()
+                    .then(function(response){
+                      $scope.outStatNow = response.data;
+                    },
+                    function(error) {
+                      console.log('Cannot compute guests stat')
+                    });
                   $scope.showGuests = true;
                   console.log("serverTimeFactory: "+msgService.getMsg("cannotQueryData"));
               });

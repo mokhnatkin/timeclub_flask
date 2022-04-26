@@ -8,8 +8,8 @@
  * Controller of the timeclubAngularApp
  */
 angular.module('timeclubAngularApp')
-  .controller('DashboardCtrl', ['$scope','guestFactory','guestCompute','clientFactoryFiltered','promotionFactory','$rootScope','msgService','serverTimeFactory',
-  function ($scope,guestFactory,guestCompute,clientFactoryFiltered,promotionFactory,$rootScope,msgService,serverTimeFactory) {
+  .controller('DashboardCtrl', ['$scope','guestFactory','guestCompute','clientFactoryFiltered','promotionFactory','$rootScope','msgService','serverTimeFactory','guestsOutStatFactory',
+  function ($scope,guestFactory,guestCompute,clientFactoryFiltered,promotionFactory,$rootScope,msgService,serverTimeFactory,guestsOutStatFactory) {
     $scope.showInfo = false;
     $scope.message = msgService.getMsg("loadingInProgress");
     $scope.guestsModified = [];  
@@ -45,7 +45,14 @@ angular.module('timeclubAngularApp')
                     .then(function(response) {
                         $scope.promotions = response.data;
                         $scope.guestsModified = guestCompute.modifyGuestArr($scope.guests,$scope.promotions,$scope.endDate);
-                        $scope.outStatNow = guestCompute.computeGuestStat($scope.guestsModified);
+                        //$scope.outStatNow = guestCompute.computeGuestStat($scope.guestsModified);
+                        guestsOutStatFactory.getItems()
+                            .then(function(response){
+                                $scope.outStatNow = response.data;
+                            },
+                            function(error) {
+                            console.log('Cannot compute guests stat')
+                        });                        
                     },
                         function(error) {console.log("promotionFactory: "+msgService.getMsg("cannotQueryData"));}
                     );
