@@ -1095,10 +1095,6 @@ angular.module('timeclubAngularApp')
                 return $http.get(urlBase);
             };
 
-            dataFactory.getItemsForPeriod = function (checkout_start,checkout_end) {
-                return $http.get(urlBase + '/' + checkout_start + '/' + checkout_end);
-            };
-
             return dataFactory;
         }])
 
@@ -1116,5 +1112,20 @@ angular.module('timeclubAngularApp')
 
             return dataFactory;
         }])
+
+
+        .factory('guestsHistoryFullStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+        function($http,baseURL_flask,get_token_from_local_storage) {
+            var urlBase = baseURL_flask + 'history_guests_full_stat';
+            var dataFactory = {};
+            
+            $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
+
+            dataFactory.getItems = function (checkout_start,checkout_end) {
+                return $http.get(urlBase + '/' + checkout_start + '/' + checkout_end);
+            };
+
+            return dataFactory;
+        }])        
 
     ;

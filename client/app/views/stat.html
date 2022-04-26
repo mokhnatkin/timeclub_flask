@@ -72,10 +72,10 @@
               </thead>
               <tbody>
                   <tr ng-repeat="outStat in outStat">
-                      <td>{{outStat.category}}</td>
-                      <td>{{outStat.n}}</td>
-                      <td>{{outStat.sum | number:0}}</td>
-                      <td>{{outStat.av | number:0}}</td>
+                      <td>{{outStat.name}}</td>
+                      <td>{{outStat.total_people}}</td>
+                      <td>{{outStat.amount | number:0}}</td>
+                      <td>{{outStat.mean_amount | number:0}}</td>
                   </tr>
               </tbody>
           </table>

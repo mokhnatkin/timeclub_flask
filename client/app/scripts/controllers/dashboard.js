@@ -63,7 +63,7 @@ angular.module('timeclubAngularApp')
                 },
               function(response) {
                 $scope.message = msgService.getMsg("cannotQueryData")+response.status + " " + response.statusText;
-              });              
+              });
 
     };
 
