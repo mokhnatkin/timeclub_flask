@@ -65,16 +65,16 @@
               <thead>
                   <tr>                         
                       <th>Категория</th>
-                      <th>Кол-во</th>
                       <th>Сумма</th>
+                      <th>Кол-во</th>
                       <th>Средний чек</th>
                   </tr>
               </thead>
               <tbody>
                   <tr ng-repeat="outStat in outStat">
                       <td>{{outStat.name}}</td>
-                      <td>{{outStat.total_people}}</td>
                       <td>{{outStat.amount | number:0}}</td>
+                      <td>{{outStat.total_people}}</td>
                       <td>{{outStat.mean_amount | number:0}}</td>
                   </tr>
               </tbody>
