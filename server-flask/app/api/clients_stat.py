@@ -133,7 +133,11 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
 
         total_amount = df['amount'].sum()#всего
         total_people = df['id'].count()
-        mean_amount = round(total_amount/total_people)
+        try:
+            mean_amount = round(total_amount/total_people)
+        except:
+            mean_amount = 0
+
         data_item = {"name":"Всего",
                 "amount":int(total_amount),
                 "total_people":int(total_people),
@@ -169,7 +173,10 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
 
         total_guests_amount = total_amount
         total_guests_people = total_people - total_employees_people
-        mean_guests_amount = round(total_amount / total_guests_people)
+        try:
+            mean_guests_amount = round(total_amount / total_guests_people)
+        except:
+            mean_guests_amount = 0
         data_item = {"name":"----Гости",
                 "amount":int(total_guests_amount),
                 "total_people":int(total_guests_people),
@@ -187,7 +194,10 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
 
         total_not_free_guests_amount = total_guests_amount
         total_not_free_guests_people = total_guests_people - total_free_guests_people
-        mean_not_free_guests_amount = round(total_not_free_guests_amount / total_not_free_guests_people)
+        try:
+            mean_not_free_guests_amount = round(total_not_free_guests_amount / total_not_free_guests_people)
+        except:
+            mean_not_free_guests_amount = 0
         data_item = {"name":"------платные гости",
                 "amount":int(total_not_free_guests_amount),
                 "total_people":int(total_not_free_guests_people),
@@ -196,7 +206,10 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
 
         total_no_promo_amount = df.loc[(df['isEmployee'] != True) & (df['promotion'] == 'not_set'), 'amount'].sum()#всего стандартных (без акции)
         total_no_promo_people = df.loc[(df['isEmployee'] != True) & (df['isFree'] != True) & (df['promotion'] == 'not_set'), 'id'].count()
-        mean_no_promo_amount = round(total_no_promo_amount / total_no_promo_people)
+        try:
+            mean_no_promo_amount = round(total_no_promo_amount / total_no_promo_people)
+        except:
+            mean_no_promo_amount = 0        
         data_item = {"name":"--------стандарт (не по акции)",
                 "amount":int(total_no_promo_amount),
                 "total_people":int(total_no_promo_people),
@@ -205,7 +218,11 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
 
         total_promo_amount = total_not_free_guests_amount - total_no_promo_amount
         total_promo_people = total_not_free_guests_people - total_no_promo_people
-        mean_promo_amount = round(total_promo_amount / total_promo_people)
+        try:
+            mean_promo_amount = round(total_promo_amount / total_promo_people)
+        except:
+            print('total_promo_amount=',total_promo_amount,'total_promo_people=',total_promo_people)
+            mean_promo_amount = 0
         data_item = {"name":"--------акции",
                 "amount":int(total_promo_amount),
                 "total_people":int(total_promo_people),
