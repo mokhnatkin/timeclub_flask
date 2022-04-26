@@ -221,14 +221,25 @@ def get_history_guests_full_stat(checkout_start=None,checkout_end=None):
         try:
             mean_promo_amount = round(total_promo_amount / total_promo_people)
         except:
-            print('total_promo_amount=',total_promo_amount,'total_promo_people=',total_promo_people)
             mean_promo_amount = 0
         data_item = {"name":"--------акции",
                 "amount":int(total_promo_amount),
                 "total_people":int(total_promo_people),
                 "mean_amount":int(mean_promo_amount)}
-        data.append(data_item)        
+        data.append(data_item)
 
-        _promos = Promotion.query.with_entities(Promotion.id,Promotion.type,Promotion.value).all()
+        promos = Promotion.query.with_entities(Promotion.id,Promotion.name).all()
+        for promo in promos:#там, где выбрана акция
+            promo_amount = df.loc[df['promotion'] == promo.id, 'amount'].sum()
+            promo_people = df.loc[df['promotion'] == promo.id, 'id'].count()
+            try:
+                mean_promo_amount = round(promo_amount / promo_people)
+            except:
+                mean_promo_amount = 0
+            data_item = {"name":"----------"+str(promo.name),
+                    "amount":int(promo_amount),
+                    "total_people":int(promo_people),
+                    "mean_amount":int(mean_promo_amount)}
+            data.append(data_item)
     
     return jsonify(data)

@@ -45,7 +45,7 @@ angular.module('timeclubAngularApp')
           guestsHistoryFullStatFactory.getItems(startDate.toISOString(),endDate.toISOString())
             .then(function(response) {
                 $scope.outStat = response.data;
-                console.log($scope.outStat);
+                //console.log($scope.outStat);
                 $scope.showInfo = true;
                 $scope.showMessage = false;
 
