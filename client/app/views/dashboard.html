@@ -28,21 +28,21 @@
           </tr>
           <tr>
             <td><strong>Некафе за сегодня:</strong> начиная с <strong>{{startDate | date: 'dd.MM.y H:mm:ss'}}</strong></td>
-            <td align="right"><strong>{{outStatToday[5] | number:0 }}</strong></td>
-            <td>{{outStatToday[0]}}</td>
-            <td>{{outStatToday[1]}}</td>
-            <td>{{outStatToday[2]}}</td>
-            <td>{{outStatToday[3]}}</td>
-            <td>{{outStatToday[4]}}</td>            
+            <td align="right"><strong>{{outStatToday.amount | number:0 }}</strong></td>
+            <td>{{outStatToday.total_people}}</td>
+            <td>{{outStatToday.total_employees}}</td>
+            <td>{{outStatToday.total_guests}}</td>
+            <td>{{outStatToday.paid_guests}}</td>
+            <td>{{outStatToday.free_guests}}</td>            
           </tr>
           <tr>
             <td><strong>Некафе за этот месяц:</strong> начиная с <strong>{{startDate2 | date: 'dd.MM.y H:mm:ss'}}</strong></td>
-            <td align="right"><strong>{{outStatMonth[5] | number:0 }}</strong></td>
-            <td>{{outStatMonth[0]}}</td>
-            <td>{{outStatMonth[1]}}</td>
-            <td>{{outStatMonth[2]}}</td>
-            <td>{{outStatMonth[3]}}</td>
-            <td>{{outStatMonth[4]}}</td>            
+            <td align="right"><strong>{{outStatMonth.amount | number:0 }}</strong></td>
+            <td>{{outStatMonth.total_people}}</td>
+            <td>{{outStatMonth.total_employees}}</td>
+            <td>{{outStatMonth.total_guests}}</td>
+            <td>{{outStatMonth.paid_guests}}</td>
+            <td>{{outStatMonth.free_guests}}</td>            
           </tr>                        
         </tbody>
       </table>

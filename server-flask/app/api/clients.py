@@ -61,7 +61,7 @@ def delete_client(id):
 def get_clients_employees(checkout_start,checkout_end):
     #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
     _checkout_start = dateutil.parser.parse(checkout_start)
-    _checkout_end = dateutil.parser.parse(checkout_end)    
+    _checkout_end = dateutil.parser.parse(checkout_end)
     
     resources = Clients.query.filter(Clients.checkoutTime.between(_checkout_start, _checkout_end)) \
                             .filter(Clients.isEmployee == True) \

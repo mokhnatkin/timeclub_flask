@@ -60,3 +60,48 @@ def get_guests_and_stat():
             "free_guests":int(free_guests)}
     
     return jsonify(data)
+
+
+
+@bp.route('/history_guests_stat/<checkout_start>/<checkout_end>',methods=['GET'])#get the items filtered by isOpen == False and stat
+@token_auth.login_required
+def get_history_guests_and_stat(checkout_start=None,checkout_end=None):
+    #checkout_start and checkout_end received from API in ISO format like 2019-08-14T10:47:31Z
+    _checkout_start = dateutil.parser.parse(checkout_start)
+    _checkout_end = dateutil.parser.parse(checkout_end)
+
+    total_amount = 0#outputs
+    total_people = 0
+    total_employees = 0
+    total_guests = 0
+    paid_guests = 0
+    free_guests = 0
+
+    df = pd.read_sql(db.session.query(Clients)
+                        .with_entities(Clients.id,
+                                        Clients.amount,
+                                        Clients.isFree,
+                                        Clients.isEmployee,
+                                        Clients.promotion)
+                        .filter(Clients.isOpen == False)
+                        .filter(Clients.checkoutTime.between(_checkout_start, _checkout_end))
+                        .statement,db.session.bind)
+    
+    if not df.empty:
+        #_promos = Promotion.query \
+                    #.with_entities(Promotion.id,Promotion.type,Promotion.value).all()
+        total_amount = df['amount'].sum()
+        total_people = df['id'].count()
+        total_employees = df.loc[df['isEmployee'] == True, 'id'].count()
+        total_guests = total_people - total_employees
+        free_guests = df.loc[(df['isEmployee'] != True) & (df['isFree'] == True), 'id'].count()
+        paid_guests = total_guests - free_guests
+
+    data = {"amount":int(total_amount),
+            "total_people":int(total_people),
+            "total_employees":int(total_employees),
+            "total_guests":int(total_guests),
+            "paid_guests":int(paid_guests),
+            "free_guests":int(free_guests)}
+    
+    return jsonify(data)
