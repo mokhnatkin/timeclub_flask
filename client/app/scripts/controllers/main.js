@@ -10,11 +10,9 @@
 angular.module('timeclubAngularApp')
   .controller('MainCtrl', ['$scope','guestFactory','guestCompute', 'clientFactory','activePromotionFactory','$state','promoDetails','rowColorsGuests','checkoutService', 'msgService','convertMMtoDDHHMM','guestFilterFactory','emplFactory','textConsts','serverTimeFactory','guestsOutStatFactory',
   function ($scope, guestFactory, guestCompute, clientFactory, activePromotionFactory, $state, promoDetails, rowColorsGuests, checkoutService, msgService,convertMMtoDDHHMM,guestFilterFactory,emplFactory,textConsts,serverTimeFactory,guestsOutStatFactory) {
-    //var token = get_token_from_local_storage.get_token();
-    //console.log('MainCtrl token from local storage',token)
     $scope.showGuests = false;//show / hide table with guests
     $scope.message = msgService.getMsg("loadingInProgress");
-    var N, Npromo;
+    var N;
     $scope.showAddGuestModal = true;
     $scope.showAddGroupTable = false;
     $scope.showChangeButton = true;
@@ -27,61 +25,38 @@ angular.module('timeclubAngularApp')
       $scope.companies[j] = j+1;//company number - for groups
     };
     var selectedCompanyN;
-    var currentTimeServer, currentDateTime;
+    //var currentTimeServer, currentDateTime;
 
     ///////////////////////////////////////////////////////
     $scope.promotions = [];
-
     activePromotionFactory.getItems()
     .then(function (response) {
         $scope.promotions = response.data;
-        Npromo = $scope.promotions.length;
-        guestFactory.getItems()//fetch guests from the REST server
-          .then(function(response) {
-            $scope.guests = response.data; //all guests are now in this array: $scope.guests
-            N = $scope.guests.length;
-            serverTimeFactory.getItem()//trying fetch date and time from server
-              .then(function(response) {
-                  currentTimeServer = response.data;//date&time from server
-                  //console.log('currentTimeServer',currentTimeServer)
-                  currentDateTime = new Date(currentTimeServer.currentDateTime);
-                  $scope.currentTimeToShow = currentDateTime;
-                  //console.log('currentDateTime',currentDateTime);
-                  $scope.guests = guestCompute.modifyGuestArr($scope.guests,$scope.promotions,currentDateTime);
-                  //console.log($scope.guests)
-                  guestsOutStatFactory.getItems()
-                    .then(function(response){
-                      $scope.outStatNow = response.data;
-                    },
-                    function(error) {
-                      console.log('Cannot compute guests stat')
-                    });
-                  //$scope.outStatNow = guestCompute.computeGuestStat($scope.guests);
-                  $scope.showGuests = true;
-              },
-              function(error) {
-                  currentDateTime = new Date();//if fails, use local machine date & time
-                  $scope.currentTimeToShow = currentDateTime;
-                  $scope.guests = guestCompute.modifyGuestArr($scope.guests,$scope.promotions,currentDateTime);
-                  guestsOutStatFactory.getItems()
-                    .then(function(response){
-                      $scope.outStatNow = response.data;
-                    },
-                    function(error) {
-                      console.log('Cannot compute guests stat')
-                    });
-                  $scope.showGuests = true;
-                  console.log("serverTimeFactory: "+msgService.getMsg("cannotQueryData"));
-              });
-            },
-          function(error) {
-            $scope.message = msgService.getMsg("cannotQueryData")+response.status + " " + response.statusText;
-          });        
-    }, function (error) {
-        console.log("activePromotionFactory: "+msgService.getMsg("cannotQueryData"));
-    }); 
+      },
+      function(error) {
+        window.alert("activePromotionFactory: "+msgService.getMsg("cannotQueryData"));
+      });
 
-    ///////////////////////////////////////////////////////
+    $scope.guests = [];
+    guestFactory.getItems()//fetch guests from the REST server
+        .then(function(response) {
+          $scope.guests = response.data;
+          N = $scope.guests.length;
+          $scope.showGuests = true;
+          },
+        function(error) {
+          $scope.message = msgService.getMsg("cannotQueryData")+response.status + " " + response.statusText;
+          window.alert("guestFactory: "+msgService.getMsg("cannotQueryData"));
+        });
+
+    $scope.outStatNow = [];
+    guestsOutStatFactory.getItems()//fetch guest stat from the REST server
+        .then(function(response){
+          $scope.outStatNow = response.data;
+        },
+        function(error) {
+          console.log('Cannot compute guests stat')
+        });        
 
     $scope.employees = [];
     emplFactory.getItems()//fetch employees from the REST server
@@ -195,7 +170,6 @@ angular.module('timeclubAngularApp')
     };
 
     $scope.addGuest = function(newGuest){//add one new guest - post to DB via REST server
-
       newGuest = guestCompute.actualizateGuest(newGuest,$scope.promotions);
       clientFactory.createItem(newGuest)
         .then(function (response) {           

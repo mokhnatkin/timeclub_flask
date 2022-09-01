@@ -13,10 +13,9 @@ angular.module('timeclubAngularApp')
 
     
     //constant baseURL_flask for local dev
-    //.constant("baseURL_flask","http://127.0.0.1:5000/api/")
+    .constant("baseURL_flask","http://localhost:5000/api/")
     //constant baseURL_flask for production mode http://localhost/api
-    //.constant("baseURL_flask","https://nekafesoft.com:443/api/")
-    .constant("baseURL_flask","https://nekafeapp.kz:443/api/")
+    //.constant("baseURL_flask","https://nekafeapp.kz:443/api/")
     
 
 
@@ -56,6 +55,7 @@ angular.module('timeclubAngularApp')
     .factory('guestFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
         var urlBase = baseURL_flask + 'guests';
+        var urlGuestCompute = baseURL_flask + 'clients_compute_amount';//расчет стоимости по гостю
         var dataFactory = {};
 
         $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
@@ -63,6 +63,11 @@ angular.module('timeclubAngularApp')
         dataFactory.getItems = function () {
             return $http.get(urlBase);
         };
+
+        dataFactory.computeAmount = function (id) {
+            return $http.get(urlGuestCompute + '/' + id);
+        };        
+
         return dataFactory;
     }])
 
@@ -81,6 +86,10 @@ angular.module('timeclubAngularApp')
         dataFactory.getItem = function (id) {
             return $http.get(urlBase + '/' + id);
         };
+
+        dataFactory.computeItem = function (item) {
+            return $http.get(baseURL_flask + 'guest_get_amount' + '/' + item.id, item);
+        };        
         
         dataFactory.createItem = function (item) {
             return $http.post(urlBase, item);
@@ -100,14 +109,18 @@ angular.module('timeclubAngularApp')
 
     .factory('clientFactoryFiltered', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
     function($http,baseURL_flask,get_token_from_local_storage) {
-        var urlBase = baseURL_flask + 'clients_filtered_by_checkout';
         var dataFactory = {};
 
         $http.defaults.headers.common['Authorization'] = get_token_from_local_storage.get_token();
 
-        dataFactory.getItems = function (checkout_start,checkout_end) {           
-            return $http.get(urlBase + '/' + checkout_start + '/' + checkout_end);
+        dataFactory.getItems = function (checkout_start,checkout_end) {
+            return $http.get(baseURL_flask + 'clients_filtered_by_checkout' + '/' + checkout_start + '/' + checkout_end);
         };
+        
+        dataFactory.getItemsOutStat = function (checkout_start,checkout_end) {
+            return $http.get(baseURL_flask + 'history_guests_stat' + '/' + checkout_start + '/' + checkout_end);
+        };        
+
         return dataFactory;
     }])
 
@@ -310,6 +323,7 @@ angular.module('timeclubAngularApp')
             
         return dataFactory;
     }])    
+
 
     .service('guestCompute',['$rootScope', 'textConsts','constFactory','msgService', function($rootScope,textConsts,constFactory,msgService)
     {
@@ -753,7 +767,7 @@ angular.module('timeclubAngularApp')
                 } else {promoName=undefined};
                 return promoName;
             };
-        }])
+    }])
 
 
     .service('rowColorsGuests',[function()//sets row color
@@ -1057,7 +1071,7 @@ angular.module('timeclubAngularApp')
         }])
 
         
-        .factory('constFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+    .factory('constFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
         function($http,baseURL_flask,get_token_from_local_storage) {
     
             var urlBase = baseURL_flask+'consts';
@@ -1085,7 +1099,7 @@ angular.module('timeclubAngularApp')
         }])
 
 
-        .factory('guestsOutStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+    .factory('guestsOutStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
         function($http,baseURL_flask,get_token_from_local_storage) {
             var urlBase = baseURL_flask + 'guests_stat';
             var dataFactory = {};
@@ -1100,7 +1114,7 @@ angular.module('timeclubAngularApp')
         }])
 
 
-        .factory('guestsHistoryStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+    .factory('guestsHistoryStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
         function($http,baseURL_flask,get_token_from_local_storage) {
             var urlBase = baseURL_flask + 'history_guests_stat';
             var dataFactory = {};
@@ -1115,7 +1129,7 @@ angular.module('timeclubAngularApp')
         }])
 
 
-        .factory('guestsHistoryFullStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
+    .factory('guestsHistoryFullStatFactory', ['$http', 'baseURL_flask', 'get_token_from_local_storage',
         function($http,baseURL_flask,get_token_from_local_storage) {
             var urlBase = baseURL_flask + 'history_guests_full_stat';
             var dataFactory = {};

@@ -66,17 +66,17 @@
         <tbody ng-if="showClients">
           <tr>
             <td><strong>Сумма</strong></td>
-            <td><strong>{{outStat[5] | number:0 }}</strong></td>
+            <td><strong>{{outStat.amount | number:0 }}</strong></td>
             <td>Всего людей</td>
-            <td>{{outStat[0]}}</td>
+            <td>{{ outStat.total_people }}</td>
             <td>Сотрудников</td>
-            <td>{{outStat[1]}}</td>
+            <td>{{ outStat.total_employees }}</td>
             <td><strong>Гостей</strong></td>
-            <td><strong>{{outStat[2]}}</strong></td> 
+            <td><strong>{{ outStat.total_guests }}</strong></td> 
             <td>Платных гостей</td>
-            <td>{{outStat[3]}}</td>
+            <td>{{ outStat.paid_guests }}</td>
             <td>Бесплатных гостей</td>
-            <td>{{outStat[4]}}</td>            
+            <td>{{ outStat.free_guests }}</td>            
           </tr>                     
         </tbody>
       </table>      

@@ -1,27 +1,30 @@
 import math
+from datetime import datetime, timedelta
+from app.models import Const, Promotion
 
 
-def convert_string_to_bool(input_str):
-    if input_str in ('True','true','1') or input_str == True or input_str == 1:
-        res = True
-    else:
-        res = False
-    return res
+def compute_minutes_in_club(arrivalTime):
+    now = datetime.utcnow()#current date time
+    time_diff = now - arrivalTime
+    minutes_in_club = max(math.floor(time_diff.total_seconds() / 60),0)#no negative values
+    return minutes_in_club
 
 
-
-def compute_amount_per_guest(arrivalTime,isFree,isEmployee,isEmployeeAtWork,isDirector,promotion,
-                            price_per_minute,max_amount,now,_promos):#compute amount per guest
+def compute_amount_per_guest(arrivalTime,isFree,isEmployee,isEmployeeAtWork,isDirector,promotion):#compute amount per guest
     amount = -100#initial not real amount
+    _price_per_minute = Const.query.filter(Const.name == 'pricePerMinute').first() or 0
+    price_per_minute = _price_per_minute.value#price per minute
+    _max_amount = Const.query.filter(Const.name == 'maxAmount').first() or 0
+    max_amount = _max_amount.value#max amount per guest
+    _promos = Promotion.query \
+                    .with_entities(Promotion.id,Promotion.type,Promotion.value).all()
 
     if isFree or isEmployee or isEmployeeAtWork or isDirector:
         amount = 0
     else:
-        time_diff = now - arrivalTime
-        minutes_in_club = math.floor(time_diff.total_seconds() / 60)
-
-        if promotion == 'not_set':#standard guest
-            amount = min(minutes_in_club * price_per_minute,max_amount)
+        minutes_in_club = compute_minutes_in_club(arrivalTime)
+        if promotion == 'not_set' or promotion is None:#standard guest
+            amount = min(minutes_in_club * price_per_minute, max_amount)
         else:#promotion in place
             #let's find corresponding promo and it parameters
             found = False

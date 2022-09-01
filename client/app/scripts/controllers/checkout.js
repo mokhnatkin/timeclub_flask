@@ -20,9 +20,15 @@ angular.module('timeclubAngularApp')
           checkoutDateTime = checkoutService.fetchDateTime();
           N = $scope.guestsToCheckout.length;
           $scope.totalN = N;
-          $scope.guestsToCheckout = guestCompute.modifyGuestArr($scope.guestsToCheckout,$scope.promotions,checkoutDateTime);
+          //$scope.guestsToCheckout = guestCompute.modifyGuestArr($scope.guestsToCheckout,$scope.promotions,checkoutDateTime);
           $scope.amountCheckout = 0;
           for (var i = 0; i < N; i++){
+              clientFactory.computeItem($scope.guestsToCheckout[i])
+              .then(function (response) {                
+                  //$state.reload();
+              }, function (error) {
+                  console.log('Cannot compute time & amount per guest:'+ error.message);                
+              });              
               $scope.amountCheckout = $scope.amountCheckout + $scope.guestsToCheckout[i].amount;
               $scope.guestsToCheckout[i].checkoutTime = checkoutDateTime;        
           };          

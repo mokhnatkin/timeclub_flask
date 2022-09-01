@@ -121,7 +121,14 @@ angular.module('timeclubAngularApp')
               N = $scope.clients.length;
               $scope.showClients = true;
               $scope.search = '';
-              $scope.outStat = guestCompute.computeGuestStat($scope.clients);
+              //$scope.outStat = guestCompute.computeGuestStat($scope.clients);
+              clientFactoryFiltered.getItemsOutStat(startDate.toISOString(),endDate.toISOString())
+                .then(function(response) {
+                  $scope.outStat = response.data;
+                },
+                function(error) {
+                  console.log('cannot get guest outStat from API')
+                });
               },
             function(error) {
               $scope.message = msgService.getMsg("cannotQueryData")+response.status + " " + response.statusText;

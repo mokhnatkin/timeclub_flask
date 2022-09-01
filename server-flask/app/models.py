@@ -4,10 +4,17 @@ from time import time
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import app
-from app.universal_routes import convert_string_to_bool
 import dateutil.parser
 import base64
 import os
+
+
+def convert_string_to_bool(input_str):
+    if input_str in ('True','true','1') or input_str == True or input_str == 1:
+        res = True
+    else:
+        res = False
+    return res
 
 
 class CollectionAPIMixin(object):#fetch all items from DB
