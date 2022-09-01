@@ -13,9 +13,9 @@ angular.module('timeclubAngularApp')
 
     
     //constant baseURL_flask for local dev
-    .constant("baseURL_flask","http://localhost:5000/api/")
+    //.constant("baseURL_flask","http://localhost:5000/api/")
     //constant baseURL_flask for production mode http://localhost/api
-    //.constant("baseURL_flask","https://nekafeapp.kz:443/api/")
+    .constant("baseURL_flask","https://nekafeapp.kz:443/api/")
     
 
 
