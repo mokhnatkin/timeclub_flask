@@ -39,7 +39,7 @@
                         <td class="narrowColumn"><p ng-if="!guestToCheckout.isEmployee">Клиент</p><p ng-if="guestToCheckout.isEmployee && guestToCheckout.isEmployeeAtWork">Сотрудник Смена</p><p ng-if="guestToCheckout.isEmployee && !guestToCheckout.isEmployeeAtWork">Сотрудник Просто</p></td>
                         <td><p ng-if="guestToCheckout.isFree">Бесплатно</p><p ng-if="!guestToCheckout.isFree">Платно</p></td>
                         <td>{{getPromoNameById(guestToCheckout.promotion)}}</td>
-                        <td class="narrowColumn">{{guestToCheckout.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>                        
+                        <td class="narrowColumn">{{guestToCheckout.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>                        
                         <td>{{guestToCheckout.comment}}</td>
                         <td><button ng-class="defineBtnClass(guestToCheckout.isChecked)" ng-click="guestToCheckout.isChecked=!guestToCheckout.isChecked">{{defineBtnTxt(guestToCheckout.isChecked)}}</button></td>
                     </tr>

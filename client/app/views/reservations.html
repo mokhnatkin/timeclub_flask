@@ -161,7 +161,7 @@
             <td><input type="checkbox" ng-model="booking.isSelected"></td>                        
             <td>{{booking.phone | phoneFilter}}</td>
             <td>{{booking.name}}</td>
-            <td class="narrowColumn">{{booking.date | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
+            <td class="narrowColumn">{{booking.date | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>
             <td>{{booking.numberOfPeople}}</td>
             <td>{{booking.place}}</td>
             <td><p ng-if="booking.isBirthday">Да</p><p ng-if="!booking.isBirthday">Нет</p></td>

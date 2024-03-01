@@ -13,7 +13,7 @@
         <table class="table table-striped table-condensed table-responsive">
           <tr>
               <td class="narrowColumn"><strong>Время</strong></td>
-              <td class="narrowColumn"><strong>{{currentTimeToShow | date: 'dd.MM.y H:mm:ss' : '+0600'}}</strong></td>
+              <td class="narrowColumn"><strong>{{currentTimeToShow | date: 'dd.MM.y H:mm:ss' : '+0500'}}</strong></td>
           </tr>
           <tr>
               <td class="narrowColumn"><strong>Сумма</strong></td>
@@ -209,7 +209,7 @@
               <td class="narrowColumn"><p ng-if="!guest.isEmployee">Клиент</p><p ng-if="guest.isEmployee && guest.isEmployeeAtWork && !guest.isDirector">Сотрудник Смена</p><p ng-if="guest.isEmployee && !guest.isEmployeeAtWork && !guest.isDirector">Сотрудник Просто</p><p ng-if="guest.isEmployee && guest.isDirector">Директор</p></td>
               <td><p ng-if="guest.isFree">Бесплатно</p><p ng-if="!guest.isFree">Платно</p></td>
               <td>{{getPromoNameById(guest.promotion)}}</td>
-              <td class="narrowColumn">{{guest.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>              
+              <td class="narrowColumn">{{guest.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>              
               <td>{{guest.comment}}</td>
             </tr>
           </tbody>

@@ -92,8 +92,8 @@
             <td><input type="checkbox" ng-model="client.isChecked"></td>
             <td><strong>{{client.name}}</strong></td>
             <td class="narrowColumn"><p ng-if="!client.isEmployee">Клиент</p><p ng-if="client.isEmployee && client.isEmployeeAtWork && !client.isDirector">Сотрудник Смена</p><p ng-if="client.isEmployee && !client.isEmployeeAtWork && !client.isDirector">Сотрудник Просто</p><p ng-if="client.isEmployee && client.isDirector">Директор</p></td>
-            <td class="narrowColumn">{{client.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
-            <td class="narrowColumn">{{client.checkoutTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
+            <td class="narrowColumn">{{client.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>
+            <td class="narrowColumn">{{client.checkoutTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>
             <td align="center">{{client.timeInClub}}</td>
             <td align="center">{{computeWage(client.timeInClub,client.isEmployeeAtWork) | number:0}}</td>
             <td>{{convertMinutes(client.timeInClub)}}</td>

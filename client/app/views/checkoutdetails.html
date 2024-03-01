@@ -45,8 +45,8 @@
                             <td>{{convertMinutes(guestToCheckout.timeInClub)}}</td>
                             <td align="center"><strong>{{guestToCheckout.amount | number:0}}</strong></td>
                             <td>{{getPromoNameById(guestToCheckout.promotion)}}</td>
-                            <td>{{guestToCheckout.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>
-                            <td>{{guestToCheckout.checkoutTime | date: 'dd.MM.y H:mm:ss' : '+0600'}}</td>                            
+                            <td>{{guestToCheckout.arrivalTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>
+                            <td>{{guestToCheckout.checkoutTime | date: 'dd.MM.y H:mm:ss' : '+0500'}}</td>                            
                         </tr>
                     </tbody>
                 </table>
